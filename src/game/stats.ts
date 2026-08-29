@@ -1,7 +1,7 @@
 import type { ClassId, Effect, Effects, GameState } from './types';
 import { CLASSES } from './data/classes';
 import { UNITS, unitMilestoneMult } from './data/units';
-import { GEAR } from './data/gear';
+import { gearEffects } from './items';
 import { PETS } from './data/pets';
 import { RELICS } from './data/relics';
 import { BOSS_TIME } from './data/enemies';
@@ -33,10 +33,7 @@ export function collectEffects(s: GameState): Effects {
     add(e, f.innate, 0.5);
     for (const node of f.tree) if (node.tier === 1 && !node.capstone) add(e, node.perRank, node.maxRank * 0.5);
   }
-  for (const g of GEAR) {
-    const lvl = s.gear[g.id] ?? 0;
-    if (lvl > 0) e[g.effect] = (e[g.effect] ?? 0) + g.base + g.perLevel * (lvl - 1);
-  }
+  add(e, gearEffects(s));
   for (const p of PETS) {
     const lvl = s.pets[p.id] ?? 0;
     if (lvl > 0) add(e, p.passive, lvl);
@@ -75,13 +72,13 @@ export interface Derived {
 export function heroTapBase(classId: ClassId | null, heroLevel: number): number {
   const base = classId ? CLASSES[classId].baseTap : 5;
   // linear early, then gently exponential to keep pace with 1.18^stage enemies
-  return base * (1 + heroLevel * 0.6) * Math.pow(1.032, heroLevel);
+  return base * (1 + heroLevel * 0.6) * Math.pow(1.035, heroLevel);
 }
 
 export function unitDps(id: string, level: number): number {
   const u = UNITS.find(u => u.id === id);
   if (!u || level <= 0) return 0;
-  return u.baseDps * level * unitMilestoneMult(level) * Math.pow(1.012, level);
+  return u.baseDps * level * unitMilestoneMult(level) * Math.pow(1.015, level);
 }
 
 export function classTier(s: GameState): 1 | 2 | 3 {

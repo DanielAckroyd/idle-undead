@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { newGame, chooseClass, tap, tick, buyUnit, buyPet, setActivePet, learnSkill, canLearn, rebirth, soulsOnRebirth, buyRelic, applyOffline, tierUnlocked, STAGE_CAP } from './engine';
 import { serialize, deserialize } from './save';
+import { rollItem, addItem, equip, salvage, reforge, activeSets, gearEffects } from './items';
+import { INVENTORY_CAP } from './data/items';
 import { derive } from './stats';
 import { fmt, geomCost, maxAffordable } from './numbers';
 import { CLASSES } from './data/classes';
@@ -203,5 +205,57 @@ describe('review regressions', () => {
     expect(out.army).toEqual({ archers: 3 });
     expect(out.stage).toBe(STAGE_CAP);
     expect(deserialize('{nope')).toBeNull();
+  });
+});
+
+describe('items', () => {
+  it('bosses drop items; rarity affix counts and scaling hold', () => {
+    const s = fresh();
+    s.stage = 10; s.maxStage = 10; s.gold = 1e12; buyUnit(s, 'zombies', 100);
+    s.enemy = { name: 'b', factionId: 'holy', hp: 1, maxHp: 1, isBoss: true, timer: 30 };
+    tick(s, 0.1);
+    expect(s.inventory.length).toBe(1);
+    expect(s.lastDrop).toBe(s.inventory[0].uid);
+    const leg = rollItem(7, 50, 'weapon', 'legendary');
+    expect(leg.affixes.length).toBe(4);
+    expect(leg.affixes.every(a => a.q >= 0.9)).toBe(true);
+    const c1 = rollItem(7, 1, 'weapon', 'common'), c2 = rollItem(7, 81, 'weapon', 'common');
+    expect(c2.affixes[0].value).toBeGreaterThanOrEqual(c1.affixes[0].value);
+  });
+  it('equip applies effects, salvage removes and grants scrap, reforge rerolls', () => {
+    const s = fresh();
+    const it = rollItem(3, 20, 'weapon', 'rare');
+    addItem(s, it); equip(s, it.uid);
+    const eff = gearEffects(s);
+    expect(Object.keys(eff).length).toBeGreaterThan(0);
+    s.scrap = 100;
+    const before = JSON.stringify(it.affixes[0]);
+    expect(reforge(s, it.uid, 0, 99)).toBe(true);
+    expect(s.scrap).toBe(88);
+    expect(JSON.stringify(it.affixes[0])).not.toBe(before);
+    expect(salvage(s, it.uid)).toBe(true);
+    expect(s.equipped.weapon).toBeNull();
+    expect(s.scrap).toBe(96);
+  });
+  it('full inventory auto-salvages; sets need 3 same-essence pieces', () => {
+    const s = fresh();
+    for (let i = 0; i < INVENTORY_CAP; i++) addItem(s, rollItem(i, 5));
+    expect(addItem(s, rollItem(999, 5))).toBe(false);
+    expect(s.scrap).toBeGreaterThan(0);
+    const t = fresh();
+    let n = 0;
+    for (let seed = 0; n < 3 && seed < 500; seed++) { const it = rollItem(seed, 30); if (it.essence === 'blood' && !t.equipped[it.slot]) { addItem(t, it); equip(t, it.uid); n++; } }
+    expect(activeSets(t)).toEqual(['blood']);
+    expect(gearEffects(t).tapMult).toBeGreaterThanOrEqual(1);
+  });
+  it('inventory survives rebirth and v1 saves migrate', () => {
+    const s = fresh(); s.maxStage = 40;
+    addItem(s, rollItem(1, 10));
+    rebirth(s);
+    expect(s.inventory.length).toBe(1);
+    const raw = JSON.parse(serialize(s)); raw.version = 1; raw.gear = { rusted_blade: 3 };
+    const out = deserialize(JSON.stringify(raw))!;
+    expect(out.version).toBe(2);
+    expect((out as unknown as { gear?: unknown }).gear).toBeUndefined();
   });
 });

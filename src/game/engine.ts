@@ -1,14 +1,14 @@
 import type { ClassId, Enemy, GameState } from './types';
 import { CLASSES } from './data/classes';
 import { UNITS } from './data/units';
-import { GEAR } from './data/gear';
+import { addItem, rollItem } from './items';
 import { PETS } from './data/pets';
 import { RELICS } from './data/relics';
 import { BOSS_EVERY, KILLS_PER_STAGE, enemyGold, enemyMaxHp, factionForStage, isBossStage } from './data/enemies';
 import { derive, HERO_COST_BASE, HERO_COST_GROWTH, type Derived } from './stats';
 import { geomCost, maxAffordable, rng } from './numbers';
 
-export const SAVE_VERSION = 1;
+export const SAVE_VERSION = 2;
 export const COMBO_DECAY_SECONDS = 1.5;
 /** Hard cap: enemy HP overflows Number past ~stage 3500. */
 export const STAGE_CAP = 3000;
@@ -32,7 +32,8 @@ export function newGame(seed = Date.now()): GameState {
     enemy: { name: '', factionId: 'holy', hp: 1, maxHp: 1, isBoss: false },
     fightingBoss: true,
     gold: 0, souls: 0, heroLevel: 0, skillPointsSpent: 0, bankedSkillPoints: 0,
-    skills: {}, army: {}, gear: {}, pets: {}, activePet: null, relics: {},
+    skills: {}, army: {}, pets: {}, activePet: null, relics: {},
+    inventory: [], equipped: { weapon: null, armor: null, crown: null, trinket: null, charm: null }, scrap: 0, lastDrop: null,
     rebirths: 0, totalSouls: 0, comboStacks: 0, comboTimer: 0, killStacks: 0, petCooldown: 0,
     lastTick: Date.now(),
     stats: { taps: 0, kills: 0, goldEarned: 0, damageDealt: 0, playSeconds: 0 },
@@ -73,6 +74,7 @@ function onKill(s: GameState, d: Derived) {
   const r = rng(s.seed + s.stats.kills * 31);
 
   if (wasBoss) {
+    addItem(s, rollItem(s.seed + s.stats.kills * 977 + s.stage, s.stage));
     advanceStage(s, 1);
   } else {
     s.killsThisStage++;
@@ -208,20 +210,6 @@ export function buyUnit(s: GameState, id: string, count: number): boolean {
   return true;
 }
 
-export function gearCost(s: GameState, id: string): number {
-  const g = GEAR.find(g => g.id === id)!;
-  return geomCost(g.baseCost, g.costGrowth, s.gear[id] ?? 0, 1);
-}
-export function buyGear(s: GameState, id: string): boolean {
-  const g = GEAR.find(g => g.id === id);
-  if (!g || s.maxStage < g.unlockStage) return false;
-  const cost = gearCost(s, id);
-  if (s.gold < cost) return false;
-  s.gold -= cost;
-  s.gear[id] = (s.gear[id] ?? 0) + 1;
-  return true;
-}
-
 export function petCost(s: GameState, id: string): number {
   const p = PETS.find(p => p.id === id)!;
   return geomCost(p.baseCost, p.costGrowth, s.pets[id] ?? 0, 1);
@@ -308,7 +296,7 @@ export function rebirth(s: GameState, fusion: ClassId | null = null): boolean {
   s.skills = {};
   s.skillPointsSpent = 0;
   s.bankedSkillPoints = keepSp;
-  s.army = {}; s.gear = {}; s.pets = {}; s.activePet = null;
+  s.army = {}; s.pets = {}; s.activePet = null; // inventory, equipped and scrap persist
   s.comboStacks = 0; s.comboTimer = 0; s.killStacks = 0; s.petCooldown = 0;
   s.stage = startStage; s.maxStage = startStage; s.runStartStage = startStage; s.killsThisStage = 0; s.fightingBoss = true;
   s.fusionId = fusionAllowed ? fusion : null;

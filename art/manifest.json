@@ -1,0 +1,650 @@
+[
+  {
+    "kind": "classes",
+    "id": "skeleton_1",
+    "size": "1024x1024",
+    "outW": 512,
+    "outH": 512,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Playable undead hero \"Skeleton\": a scrappy skeleton warrior with a chipped sword and a wooden shield, bone-white with green-glowing eye sockets. Facing RIGHT, heroic pose."
+  },
+  {
+    "kind": "classes",
+    "id": "skeleton_2",
+    "size": "1024x1024",
+    "outW": 512,
+    "outH": 512,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Playable undead hero \"Bone Knight\": a Bone Knight: armored skeleton champion in black plate with a bone greatsword, tattered cape, green eye-fire. Facing RIGHT, heroic pose."
+  },
+  {
+    "kind": "classes",
+    "id": "skeleton_3",
+    "size": "1024x1024",
+    "outW": 512,
+    "outH": 512,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Playable undead hero \"Lich\": a Lich: undead sorcerer-king in ornate black-and-gold robes, spiked crown, bone staff with a green soul gem, floating skulls. Facing RIGHT, heroic pose."
+  },
+  {
+    "kind": "classes",
+    "id": "ghost_1",
+    "size": "1024x1024",
+    "outW": 512,
+    "outH": 512,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Playable undead hero \"Ghost\": a translucent pale-blue ghost with a sorrowful face and trailing wispy tail, faint glow. Facing RIGHT, heroic pose."
+  },
+  {
+    "kind": "classes",
+    "id": "ghost_2",
+    "size": "1024x1024",
+    "outW": 512,
+    "outH": 512,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Playable undead hero \"Wraith\": a Wraith: hooded spectre in torn shadowy robes with a spectral scythe, cold blue light. Facing RIGHT, heroic pose."
+  },
+  {
+    "kind": "classes",
+    "id": "ghost_3",
+    "size": "1024x1024",
+    "outW": 512,
+    "outH": 512,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Playable undead hero \"Banshee Queen\": a Banshee Queen: regal spectral queen with a crown of ice-blue flame, flowing ethereal gown, screaming aura. Facing RIGHT, heroic pose."
+  },
+  {
+    "kind": "classes",
+    "id": "vampire_1",
+    "size": "1024x1024",
+    "outW": 512,
+    "outH": 512,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Playable undead hero \"Vampire\": a young vampire in a red-lined black coat, fangs bared, red eyes, elegant and quick. Facing RIGHT, heroic pose."
+  },
+  {
+    "kind": "classes",
+    "id": "vampire_2",
+    "size": "1024x1024",
+    "outW": 512,
+    "outH": 512,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Playable undead hero \"Vampire Lord\": a Vampire Lord: aristocratic vampire in ornate crimson armor with a bat-winged cloak and a rapier. Facing RIGHT, heroic pose."
+  },
+  {
+    "kind": "classes",
+    "id": "vampire_3",
+    "size": "1024x1024",
+    "outW": 512,
+    "outH": 512,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Playable undead hero \"Nosferatu\": a Nosferatu: ancient monstrous vampire, bald, bat-like, long claws, crimson mist and swarming bats, terrifying. Facing RIGHT, heroic pose."
+  },
+  {
+    "kind": "classes",
+    "id": "ghoul_1",
+    "size": "1024x1024",
+    "outW": 512,
+    "outH": 512,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Playable undead hero \"Ghoul\": a hunched ghoul with grey mottled skin, long claws and a hungry grin. Facing RIGHT, heroic pose."
+  },
+  {
+    "kind": "classes",
+    "id": "ghoul_2",
+    "size": "1024x1024",
+    "outW": 512,
+    "outH": 512,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Playable undead hero \"Ghast\": a Ghast: larger muscular ghoul with bulging sinew, bone spurs, rotting hide, dripping maw. Facing RIGHT, heroic pose."
+  },
+  {
+    "kind": "classes",
+    "id": "ghoul_3",
+    "size": "1024x1024",
+    "outW": 512,
+    "outH": 512,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Playable undead hero \"Abomination\": an Abomination: towering stitched flesh titan of many bodies, chains and hooks, multiple arms, green rot glow. Facing RIGHT, heroic pose."
+  },
+  {
+    "kind": "enemies",
+    "id": "holy_0",
+    "size": "1024x1024",
+    "outW": 512,
+    "outH": 512,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Enemy \"Acolyte\" of the Holy Order (Holy Order human zealots: white and gold armor, sunburst sigils, holy light). Facing LEFT, battle-ready stance."
+  },
+  {
+    "kind": "enemies",
+    "id": "holy_1",
+    "size": "1024x1024",
+    "outW": 512,
+    "outH": 512,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Enemy \"Templar\" of the Holy Order (Holy Order human zealots: white and gold armor, sunburst sigils, holy light). Facing LEFT, battle-ready stance."
+  },
+  {
+    "kind": "enemies",
+    "id": "holy_2",
+    "size": "1024x1024",
+    "outW": 512,
+    "outH": 512,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Enemy \"Inquisitor\" of the Holy Order (Holy Order human zealots: white and gold armor, sunburst sigils, holy light). Facing LEFT, battle-ready stance."
+  },
+  {
+    "kind": "enemies",
+    "id": "holy_3",
+    "size": "1024x1024",
+    "outW": 512,
+    "outH": 512,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Enemy \"Cleric\" of the Holy Order (Holy Order human zealots: white and gold armor, sunburst sigils, holy light). Facing LEFT, battle-ready stance."
+  },
+  {
+    "kind": "enemies",
+    "id": "holy_4",
+    "size": "1024x1024",
+    "outW": 512,
+    "outH": 512,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Enemy \"Crusader\" of the Holy Order (Holy Order human zealots: white and gold armor, sunburst sigils, holy light). Facing LEFT, battle-ready stance."
+  },
+  {
+    "kind": "enemies",
+    "id": "holy_boss",
+    "size": "1024x1024",
+    "outW": 640,
+    "outH": 640,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). BOSS \"High Paladin Aurelion\", leader of the Holy Order (Holy Order human zealots: white and gold armor, sunburst sigils, holy light). Imposing, larger-than-life, ornate legendary gear, powerful aura. Facing LEFT."
+  },
+  {
+    "kind": "backgrounds",
+    "id": "holy",
+    "size": "1024x1536",
+    "outW": 1024,
+    "outH": 1536,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Portrait-orientation painted battle backdrop for a mobile idle game, the homeland of the Holy Order (Holy Order human zealots: white and gold armor, sunburst sigils, holy light): atmospheric environment, empty foreground ground plane in the lower third where characters will stand, no characters, no creatures, moody lighting, depth with distant landmarks."
+  },
+  {
+    "kind": "enemies",
+    "id": "elves_0",
+    "size": "1024x1024",
+    "outW": 512,
+    "outH": 512,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Enemy \"Warden Scout\" of the Elven Wardens (Elven Wardens: silver-and-moonlit-blue leaf armor, forest elegance). Facing LEFT, battle-ready stance."
+  },
+  {
+    "kind": "enemies",
+    "id": "elves_1",
+    "size": "1024x1024",
+    "outW": 512,
+    "outH": 512,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Enemy \"Moon Archer\" of the Elven Wardens (Elven Wardens: silver-and-moonlit-blue leaf armor, forest elegance). Facing LEFT, battle-ready stance."
+  },
+  {
+    "kind": "enemies",
+    "id": "elves_2",
+    "size": "1024x1024",
+    "outW": 512,
+    "outH": 512,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Enemy \"Thornweaver\" of the Elven Wardens (Elven Wardens: silver-and-moonlit-blue leaf armor, forest elegance). Facing LEFT, battle-ready stance."
+  },
+  {
+    "kind": "enemies",
+    "id": "elves_3",
+    "size": "1024x1024",
+    "outW": 512,
+    "outH": 512,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Enemy \"Bladesinger\" of the Elven Wardens (Elven Wardens: silver-and-moonlit-blue leaf armor, forest elegance). Facing LEFT, battle-ready stance."
+  },
+  {
+    "kind": "enemies",
+    "id": "elves_4",
+    "size": "1024x1024",
+    "outW": 512,
+    "outH": 512,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Enemy \"Treant\" of the Elven Wardens (Elven Wardens: silver-and-moonlit-blue leaf armor, forest elegance). Facing LEFT, battle-ready stance."
+  },
+  {
+    "kind": "enemies",
+    "id": "elves_boss",
+    "size": "1024x1024",
+    "outW": 640,
+    "outH": 640,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). BOSS \"Archdruid Sylvanne\", leader of the Elven Wardens (Elven Wardens: silver-and-moonlit-blue leaf armor, forest elegance). Imposing, larger-than-life, ornate legendary gear, powerful aura. Facing LEFT."
+  },
+  {
+    "kind": "backgrounds",
+    "id": "elves",
+    "size": "1024x1536",
+    "outW": 1024,
+    "outH": 1536,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Portrait-orientation painted battle backdrop for a mobile idle game, the homeland of the Elven Wardens (Elven Wardens: silver-and-moonlit-blue leaf armor, forest elegance): atmospheric environment, empty foreground ground plane in the lower third where characters will stand, no characters, no creatures, moody lighting, depth with distant landmarks."
+  },
+  {
+    "kind": "enemies",
+    "id": "dwarves_0",
+    "size": "1024x1024",
+    "outW": 512,
+    "outH": 512,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Enemy \"Shieldbreaker\" of the Dwarven Legion (Dwarven Legion: heavy bronze-and-iron armor, runes, beards, forge glow). Facing LEFT, battle-ready stance."
+  },
+  {
+    "kind": "enemies",
+    "id": "dwarves_1",
+    "size": "1024x1024",
+    "outW": 512,
+    "outH": 512,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Enemy \"Runesmith\" of the Dwarven Legion (Dwarven Legion: heavy bronze-and-iron armor, runes, beards, forge glow). Facing LEFT, battle-ready stance."
+  },
+  {
+    "kind": "enemies",
+    "id": "dwarves_2",
+    "size": "1024x1024",
+    "outW": 512,
+    "outH": 512,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Enemy \"Tunnel Guard\" of the Dwarven Legion (Dwarven Legion: heavy bronze-and-iron armor, runes, beards, forge glow). Facing LEFT, battle-ready stance."
+  },
+  {
+    "kind": "enemies",
+    "id": "dwarves_3",
+    "size": "1024x1024",
+    "outW": 512,
+    "outH": 512,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Enemy \"Cannoneer\" of the Dwarven Legion (Dwarven Legion: heavy bronze-and-iron armor, runes, beards, forge glow). Facing LEFT, battle-ready stance."
+  },
+  {
+    "kind": "enemies",
+    "id": "dwarves_4",
+    "size": "1024x1024",
+    "outW": 512,
+    "outH": 512,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Enemy \"Iron Golem\" of the Dwarven Legion (Dwarven Legion: heavy bronze-and-iron armor, runes, beards, forge glow). Facing LEFT, battle-ready stance."
+  },
+  {
+    "kind": "enemies",
+    "id": "dwarves_boss",
+    "size": "1024x1024",
+    "outW": 640,
+    "outH": 640,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). BOSS \"Thane Borgrim Ironhand\", leader of the Dwarven Legion (Dwarven Legion: heavy bronze-and-iron armor, runes, beards, forge glow). Imposing, larger-than-life, ornate legendary gear, powerful aura. Facing LEFT."
+  },
+  {
+    "kind": "backgrounds",
+    "id": "dwarves",
+    "size": "1024x1536",
+    "outW": 1024,
+    "outH": 1536,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Portrait-orientation painted battle backdrop for a mobile idle game, the homeland of the Dwarven Legion (Dwarven Legion: heavy bronze-and-iron armor, runes, beards, forge glow): atmospheric environment, empty foreground ground plane in the lower third where characters will stand, no characters, no creatures, moody lighting, depth with distant landmarks."
+  },
+  {
+    "kind": "enemies",
+    "id": "orcs_0",
+    "size": "1024x1024",
+    "outW": 512,
+    "outH": 512,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Enemy \"Grunt\" of the Orc Warbands (Orc Warbands: green-skinned brutes, crude iron, war paint, tusks). Facing LEFT, battle-ready stance."
+  },
+  {
+    "kind": "enemies",
+    "id": "orcs_1",
+    "size": "1024x1024",
+    "outW": 512,
+    "outH": 512,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Enemy \"Wolfrider\" of the Orc Warbands (Orc Warbands: green-skinned brutes, crude iron, war paint, tusks). Facing LEFT, battle-ready stance."
+  },
+  {
+    "kind": "enemies",
+    "id": "orcs_2",
+    "size": "1024x1024",
+    "outW": 512,
+    "outH": 512,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Enemy \"Berserker\" of the Orc Warbands (Orc Warbands: green-skinned brutes, crude iron, war paint, tusks). Facing LEFT, battle-ready stance."
+  },
+  {
+    "kind": "enemies",
+    "id": "orcs_3",
+    "size": "1024x1024",
+    "outW": 512,
+    "outH": 512,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Enemy \"Shaman\" of the Orc Warbands (Orc Warbands: green-skinned brutes, crude iron, war paint, tusks). Facing LEFT, battle-ready stance."
+  },
+  {
+    "kind": "enemies",
+    "id": "orcs_4",
+    "size": "1024x1024",
+    "outW": 512,
+    "outH": 512,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Enemy \"Warg\" of the Orc Warbands (Orc Warbands: green-skinned brutes, crude iron, war paint, tusks). Facing LEFT, battle-ready stance."
+  },
+  {
+    "kind": "enemies",
+    "id": "orcs_boss",
+    "size": "1024x1024",
+    "outW": 640,
+    "outH": 640,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). BOSS \"Warchief Gorrak\", leader of the Orc Warbands (Orc Warbands: green-skinned brutes, crude iron, war paint, tusks). Imposing, larger-than-life, ornate legendary gear, powerful aura. Facing LEFT."
+  },
+  {
+    "kind": "backgrounds",
+    "id": "orcs",
+    "size": "1024x1536",
+    "outW": 1024,
+    "outH": 1536,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Portrait-orientation painted battle backdrop for a mobile idle game, the homeland of the Orc Warbands (Orc Warbands: green-skinned brutes, crude iron, war paint, tusks): atmospheric environment, empty foreground ground plane in the lower third where characters will stand, no characters, no creatures, moody lighting, depth with distant landmarks."
+  },
+  {
+    "kind": "enemies",
+    "id": "kingdom_0",
+    "size": "1024x1024",
+    "outW": 512,
+    "outH": 512,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Enemy \"Militia\" of the Human Kingdom (Human Kingdom: royal blue and steel, heraldic lions, disciplined soldiers). Facing LEFT, battle-ready stance."
+  },
+  {
+    "kind": "enemies",
+    "id": "kingdom_1",
+    "size": "1024x1024",
+    "outW": 512,
+    "outH": 512,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Enemy \"Pikeman\" of the Human Kingdom (Human Kingdom: royal blue and steel, heraldic lions, disciplined soldiers). Facing LEFT, battle-ready stance."
+  },
+  {
+    "kind": "enemies",
+    "id": "kingdom_2",
+    "size": "1024x1024",
+    "outW": 512,
+    "outH": 512,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Enemy \"Knight\" of the Human Kingdom (Human Kingdom: royal blue and steel, heraldic lions, disciplined soldiers). Facing LEFT, battle-ready stance."
+  },
+  {
+    "kind": "enemies",
+    "id": "kingdom_3",
+    "size": "1024x1024",
+    "outW": 512,
+    "outH": 512,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Enemy \"Battlemage\" of the Human Kingdom (Human Kingdom: royal blue and steel, heraldic lions, disciplined soldiers). Facing LEFT, battle-ready stance."
+  },
+  {
+    "kind": "enemies",
+    "id": "kingdom_4",
+    "size": "1024x1024",
+    "outW": 512,
+    "outH": 512,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Enemy \"Royal Guard\" of the Human Kingdom (Human Kingdom: royal blue and steel, heraldic lions, disciplined soldiers). Facing LEFT, battle-ready stance."
+  },
+  {
+    "kind": "enemies",
+    "id": "kingdom_boss",
+    "size": "1024x1024",
+    "outW": 640,
+    "outH": 640,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). BOSS \"King Aldric the Bold\", leader of the Human Kingdom (Human Kingdom: royal blue and steel, heraldic lions, disciplined soldiers). Imposing, larger-than-life, ornate legendary gear, powerful aura. Facing LEFT."
+  },
+  {
+    "kind": "backgrounds",
+    "id": "kingdom",
+    "size": "1024x1536",
+    "outW": 1024,
+    "outH": 1536,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Portrait-orientation painted battle backdrop for a mobile idle game, the homeland of the Human Kingdom (Human Kingdom: royal blue and steel, heraldic lions, disciplined soldiers): atmospheric environment, empty foreground ground plane in the lower third where characters will stand, no characters, no creatures, moody lighting, depth with distant landmarks."
+  },
+  {
+    "kind": "enemies",
+    "id": "fae_0",
+    "size": "1024x1024",
+    "outW": 512,
+    "outH": 512,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Enemy \"Pixie Swarm\" of the Fae Court (Fae Court: whimsical and eerie, violet and pink glow, thorns, glamour). Facing LEFT, battle-ready stance."
+  },
+  {
+    "kind": "enemies",
+    "id": "fae_1",
+    "size": "1024x1024",
+    "outW": 512,
+    "outH": 512,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Enemy \"Redcap\" of the Fae Court (Fae Court: whimsical and eerie, violet and pink glow, thorns, glamour). Facing LEFT, battle-ready stance."
+  },
+  {
+    "kind": "enemies",
+    "id": "fae_2",
+    "size": "1024x1024",
+    "outW": 512,
+    "outH": 512,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Enemy \"Dryad\" of the Fae Court (Fae Court: whimsical and eerie, violet and pink glow, thorns, glamour). Facing LEFT, battle-ready stance."
+  },
+  {
+    "kind": "enemies",
+    "id": "fae_3",
+    "size": "1024x1024",
+    "outW": 512,
+    "outH": 512,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Enemy \"Trickster\" of the Fae Court (Fae Court: whimsical and eerie, violet and pink glow, thorns, glamour). Facing LEFT, battle-ready stance."
+  },
+  {
+    "kind": "enemies",
+    "id": "fae_4",
+    "size": "1024x1024",
+    "outW": 512,
+    "outH": 512,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Enemy \"Unicorn\" of the Fae Court (Fae Court: whimsical and eerie, violet and pink glow, thorns, glamour). Facing LEFT, battle-ready stance."
+  },
+  {
+    "kind": "enemies",
+    "id": "fae_boss",
+    "size": "1024x1024",
+    "outW": 640,
+    "outH": 640,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). BOSS \"Queen Titania\", leader of the Fae Court (Fae Court: whimsical and eerie, violet and pink glow, thorns, glamour). Imposing, larger-than-life, ornate legendary gear, powerful aura. Facing LEFT."
+  },
+  {
+    "kind": "backgrounds",
+    "id": "fae",
+    "size": "1024x1536",
+    "outW": 1024,
+    "outH": 1536,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Portrait-orientation painted battle backdrop for a mobile idle game, the homeland of the Fae Court (Fae Court: whimsical and eerie, violet and pink glow, thorns, glamour): atmospheric environment, empty foreground ground plane in the lower third where characters will stand, no characters, no creatures, moody lighting, depth with distant landmarks."
+  },
+  {
+    "kind": "enemies",
+    "id": "dragonkin_0",
+    "size": "1024x1024",
+    "outW": 512,
+    "outH": 512,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Enemy \"Kobold\" of the Dragonkin (Dragonkin: scaled reptilian warriors, ember-orange fire, obsidian armor). Facing LEFT, battle-ready stance."
+  },
+  {
+    "kind": "enemies",
+    "id": "dragonkin_1",
+    "size": "1024x1024",
+    "outW": 512,
+    "outH": 512,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Enemy \"Drake\" of the Dragonkin (Dragonkin: scaled reptilian warriors, ember-orange fire, obsidian armor). Facing LEFT, battle-ready stance."
+  },
+  {
+    "kind": "enemies",
+    "id": "dragonkin_2",
+    "size": "1024x1024",
+    "outW": 512,
+    "outH": 512,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Enemy \"Wyvern\" of the Dragonkin (Dragonkin: scaled reptilian warriors, ember-orange fire, obsidian armor). Facing LEFT, battle-ready stance."
+  },
+  {
+    "kind": "enemies",
+    "id": "dragonkin_3",
+    "size": "1024x1024",
+    "outW": 512,
+    "outH": 512,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Enemy \"Dragon Priest\" of the Dragonkin (Dragonkin: scaled reptilian warriors, ember-orange fire, obsidian armor). Facing LEFT, battle-ready stance."
+  },
+  {
+    "kind": "enemies",
+    "id": "dragonkin_4",
+    "size": "1024x1024",
+    "outW": 512,
+    "outH": 512,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Enemy \"Salamander\" of the Dragonkin (Dragonkin: scaled reptilian warriors, ember-orange fire, obsidian armor). Facing LEFT, battle-ready stance."
+  },
+  {
+    "kind": "enemies",
+    "id": "dragonkin_boss",
+    "size": "1024x1024",
+    "outW": 640,
+    "outH": 640,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). BOSS \"Ancient Wyrm Vaelthrax\", leader of the Dragonkin (Dragonkin: scaled reptilian warriors, ember-orange fire, obsidian armor). Imposing, larger-than-life, ornate legendary gear, powerful aura. Facing LEFT."
+  },
+  {
+    "kind": "backgrounds",
+    "id": "dragonkin",
+    "size": "1024x1536",
+    "outW": 1024,
+    "outH": 1536,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Portrait-orientation painted battle backdrop for a mobile idle game, the homeland of the Dragonkin (Dragonkin: scaled reptilian warriors, ember-orange fire, obsidian armor): atmospheric environment, empty foreground ground plane in the lower third where characters will stand, no characters, no creatures, moody lighting, depth with distant landmarks."
+  },
+  {
+    "kind": "enemies",
+    "id": "demons_0",
+    "size": "1024x1024",
+    "outW": 512,
+    "outH": 512,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Enemy \"Cultist\" of the Demon Cult (Demon Cult: crimson robes, brass horns, hellfire, infernal sigils). Facing LEFT, battle-ready stance."
+  },
+  {
+    "kind": "enemies",
+    "id": "demons_1",
+    "size": "1024x1024",
+    "outW": 512,
+    "outH": 512,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Enemy \"Imp\" of the Demon Cult (Demon Cult: crimson robes, brass horns, hellfire, infernal sigils). Facing LEFT, battle-ready stance."
+  },
+  {
+    "kind": "enemies",
+    "id": "demons_2",
+    "size": "1024x1024",
+    "outW": 512,
+    "outH": 512,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Enemy \"Hellhound\" of the Demon Cult (Demon Cult: crimson robes, brass horns, hellfire, infernal sigils). Facing LEFT, battle-ready stance."
+  },
+  {
+    "kind": "enemies",
+    "id": "demons_3",
+    "size": "1024x1024",
+    "outW": 512,
+    "outH": 512,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Enemy \"Succubus\" of the Demon Cult (Demon Cult: crimson robes, brass horns, hellfire, infernal sigils). Facing LEFT, battle-ready stance."
+  },
+  {
+    "kind": "enemies",
+    "id": "demons_4",
+    "size": "1024x1024",
+    "outW": 512,
+    "outH": 512,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Enemy \"Pit Fiend\" of the Demon Cult (Demon Cult: crimson robes, brass horns, hellfire, infernal sigils). Facing LEFT, battle-ready stance."
+  },
+  {
+    "kind": "enemies",
+    "id": "demons_boss",
+    "size": "1024x1024",
+    "outW": 640,
+    "outH": 640,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). BOSS \"Archfiend Malgorath\", leader of the Demon Cult (Demon Cult: crimson robes, brass horns, hellfire, infernal sigils). Imposing, larger-than-life, ornate legendary gear, powerful aura. Facing LEFT."
+  },
+  {
+    "kind": "backgrounds",
+    "id": "demons",
+    "size": "1024x1536",
+    "outW": 1024,
+    "outH": 1536,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Portrait-orientation painted battle backdrop for a mobile idle game, the homeland of the Demon Cult (Demon Cult: crimson robes, brass horns, hellfire, infernal sigils): atmospheric environment, empty foreground ground plane in the lower third where characters will stand, no characters, no creatures, moody lighting, depth with distant landmarks."
+  },
+  {
+    "kind": "units",
+    "id": "zombies",
+    "size": "1024x1024",
+    "outW": 384,
+    "outH": 384,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Undead army unit \"Zombie Horde\": a shambling group of three rotting zombies. Facing RIGHT."
+  },
+  {
+    "kind": "units",
+    "id": "archers",
+    "size": "1024x1024",
+    "outW": 384,
+    "outH": 384,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Undead army unit \"Skeleton Archers\": a skeleton archer drawing a bone bow. Facing RIGHT."
+  },
+  {
+    "kind": "units",
+    "id": "bats",
+    "size": "1024x1024",
+    "outW": 384,
+    "outH": 384,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Undead army unit \"Bat Swarm\": a swirling swarm of vampire bats. Facing RIGHT."
+  },
+  {
+    "kind": "units",
+    "id": "wights",
+    "size": "1024x1024",
+    "outW": 384,
+    "outH": 384,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Undead army unit \"Barrow Wights\": a barrow wight in ancient rusted mail with a cold blue glow. Facing RIGHT."
+  },
+  {
+    "kind": "units",
+    "id": "golem",
+    "size": "1024x1024",
+    "outW": 384,
+    "outH": 384,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Undead army unit \"Bone Golem\": a hulking golem built from skulls and bones. Facing RIGHT."
+  },
+  {
+    "kind": "units",
+    "id": "knights",
+    "size": "1024x1024",
+    "outW": 384,
+    "outH": 384,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Undead army unit \"Death Knights\": a death knight in black spiked plate on foot with a runed greatsword. Facing RIGHT."
+  },
+  {
+    "kind": "units",
+    "id": "dracolich",
+    "size": "1024x1024",
+    "outW": 384,
+    "outH": 384,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Undead army unit \"Dracolich\": a skeletal undead dragon with green soulfire in its ribcage. Facing RIGHT."
+  },
+  {
+    "kind": "units",
+    "id": "reapers",
+    "size": "1024x1024",
+    "outW": 384,
+    "outH": 384,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Undead army unit \"Reaper Choir\": a choir of hooded reapers with scythes, mouths open in song. Facing RIGHT."
+  },
+  {
+    "kind": "pets",
+    "id": "rat",
+    "size": "1024x1024",
+    "outW": 256,
+    "outH": 256,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Cute-but-creepy undead pet \"Plague Rat\": a plague rat with glowing green eyes and a bony tail. Facing RIGHT."
+  },
+  {
+    "kind": "pets",
+    "id": "crow",
+    "size": "1024x1024",
+    "outW": 256,
+    "outH": 256,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Cute-but-creepy undead pet \"Carrion Crow\": a carrion crow with bone-white beak and tattered feathers. Facing RIGHT."
+  },
+  {
+    "kind": "pets",
+    "id": "hound",
+    "size": "1024x1024",
+    "outW": 256,
+    "outH": 256,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Cute-but-creepy undead pet \"Barghest\": a barghest: a black spectral hound with burning eyes. Facing RIGHT."
+  },
+  {
+    "kind": "pets",
+    "id": "wisp",
+    "size": "1024x1024",
+    "outW": 256,
+    "outH": 256,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Cute-but-creepy undead pet \"Grave Wisp\": a grave wisp: a floating skull-faced ball of pale flame. Facing RIGHT."
+  },
+  {
+    "kind": "pets",
+    "id": "hydra",
+    "size": "1024x1024",
+    "outW": 256,
+    "outH": 256,
+    "prompt": "Hand-painted dark-fantasy mobile game art, rich saturated accents, crisp readable silhouette, dramatic rim lighting, high detail, no text, no watermark. Full body, single character, centered, feet at the bottom, fills ~85% of the frame. TRANSPARENT background (alpha PNG, no backdrop, no ground shadow). Cute-but-creepy undead pet \"Bone Hydra\": a small three-headed bone hydra. Facing RIGHT."
+  }
+]

@@ -41,6 +41,8 @@ export interface SkillNode {
   /** effect per rank */
   perRank: Effects;
   requires?: string[];   // node ids
+  /** graph layout, column 0..2 and row within the tree */
+  pos: [number, number];
   capstone?: boolean;    // taking this evolves the class to next tier
 }
 
@@ -72,20 +74,20 @@ export interface UnitDef {
   unlockStage: number;
 }
 
-export type GearSlot = 'weapon' | 'armor' | 'trinket' | 'crown';
-export interface GearDef {
-  id: string;
-  slot: GearSlot;
-  name: string;
-  effect: Effect;
-  /** effect at level 1; grows +perLevel per level */
-  base: number;
-  perLevel: number;
-  baseCost: number;
-  costGrowth: number;
-  unlockStage: number;
-}
+export type GearSlot = 'weapon' | 'armor' | 'crown' | 'trinket' | 'charm';
+export type Rarity = 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary';
 
+export interface Affix { effect: Effect; value: number; /** 0..1 quality of the roll */ q: number }
+export interface Item {
+  uid: string;
+  name: string;
+  slot: GearSlot;
+  rarity: Rarity;
+  essence: Essence | null;
+  /** stage it dropped at; scales affix values */
+  ilvl: number;
+  affixes: Affix[];
+}
 export interface PetDef {
   id: string;
   name: string;
@@ -151,7 +153,11 @@ export interface GameState {
   bankedSkillPoints: number;
   skills: Record<string, number>;
   army: Record<string, number>;
-  gear: Record<string, number>;
+  inventory: Item[];
+  equipped: Record<GearSlot, string | null>;
+  scrap: number;
+  /** drop waiting for the UI to present (already in inventory) */
+  lastDrop: string | null;
   pets: Record<string, number>;
   activePet: string | null;
   relics: Record<string, number>;

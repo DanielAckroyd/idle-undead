@@ -1,8 +1,8 @@
 // Greedy-bot balance sim: taps 5/s, buys best-value upgrades, learns skills. Prints stage over time.
-import { newGame, chooseClass, tap, tick, buyHero, buyUnit, buyGear, buyPet, learnSkill, heroCost, unitCost, gearCost, petCost, soulsOnRebirth, rebirth, buyRelic, makeEnemy } from '../src/game/engine';
+import { newGame, chooseClass, tap, tick, buyHero, buyUnit, buyPet, learnSkill, heroCost, unitCost, petCost, soulsOnRebirth, rebirth, buyRelic, makeEnemy } from '../src/game/engine';
+import { equip, compareEquip } from '../src/game/items';
 import { derive, unitDps } from '../src/game/stats';
 import { UNITS } from '../src/game/data/units';
-import { GEAR } from '../src/game/data/gear';
 import { PETS } from '../src/game/data/pets';
 import { CLASSES } from '../src/game/data/classes';
 import { fmt } from '../src/game/numbers';
@@ -21,11 +21,12 @@ function shop() {
     const consider = (v: number, f: () => boolean) => { if (!best || v > best.v) best = { v, f }; };
     const c = heroCost(s, 1); if (c <= s.gold) consider(d.tapDamage * tapsPerSec * 0.1 / c, () => buyHero(s, 1));
     for (const u of UNITS) if (s.maxStage >= u.unlockStage) { const c = unitCost(s, u.id, 1); if (c <= s.gold) consider((unitDps(u.id, (s.army[u.id] ?? 0) + 1) - unitDps(u.id, s.army[u.id] ?? 0)) / c, () => buyUnit(s, u.id, 1)); }
-    for (const g of GEAR) if (s.maxStage >= g.unlockStage) { const c = gearCost(s, g.id); if (c <= s.gold) consider((d.tapDamage * tapsPerSec + d.idleDps) * 0.08 / c, () => buyGear(s, g.id)); }
     for (const p of PETS) if (s.maxStage >= p.unlockStage) { const c = petCost(s, p.id); if (c <= s.gold) consider(d.tapDamage * p.dmgMult / p.interval / c, () => buyPet(s, p.id)); }
     if (!best) break;
     (best as { f: () => boolean }).f();
   }
+  // equip any drop whose net effect delta is positive
+  for (const it of s.inventory) { const delta = compareEquip(s, it.uid); if (Object.values(delta).reduce((a, b) => a + b, 0) > 0) equip(s, it.uid); }
   const tree = CLASSES[cls].tree;
   for (const n of tree.filter(n => n.capstone)) learnSkill(s, n.id);
   for (const n of tree) learnSkill(s, n.id);
@@ -40,5 +41,5 @@ while (t < total) {
   if (s.maxStage % 10 === 0 && !s.fightingBoss && s.killsThisStage === 0) { s.fightingBoss = true; s.enemy = makeEnemy(s.stage, true, s.seed, d.bossTime); }
   if (t - lastPrint >= 600) { lastPrint = t; console.log(`${(t/60).toFixed(0).padStart(4)}m stage ${s.stage} (max ${s.maxStage}) ${derive(s).title} hero ${s.heroLevel} gold ${fmt(s.gold)} tap ${fmt(d.tapDamage)} idle ${fmt(d.idleDps)} souls@rb ${soulsOnRebirth(s)}`); }
 }
-console.log('army', JSON.stringify(s.army), 'gear', JSON.stringify(s.gear), 'pets', JSON.stringify(s.pets), 'effects', JSON.stringify(derive(s).effects));
+console.log('army', JSON.stringify(s.army), 'gear', JSON.stringify(s.inventory.filter(i => Object.values(s.equipped).includes(i.uid)).map(i => `${i.rarity} ${i.name}`)), 'pets', JSON.stringify(s.pets), 'effects', JSON.stringify(derive(s).effects));
 if (soulsOnRebirth(s) > 0) { rebirth(s); for (let i = 0; i < 10; i++) buyRelic(s, 'r_bone'); console.log('after rebirth: souls', s.souls, 'allMult', derive(s).effects.allMult); }

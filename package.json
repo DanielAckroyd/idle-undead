@@ -8,6 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "sprites": "node scripts/gen-sprites.mjs",
+    "art": "tsx scripts/gen-art.ts",
     "test": "vitest run",
     "test:watch": "vitest",
     "preview": "vite preview"
@@ -26,6 +27,7 @@
     "@vitest/coverage-v8": "^4.1.11",
     "oxlint": "^1.79.0",
     "playwright": "^1.62.1",
+    "sharp": "^0.35.4",
     "typescript": "~6.0.2",
     "vite": "^8.2.2",
     "vitest": "^4.1.11"
