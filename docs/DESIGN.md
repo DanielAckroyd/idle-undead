@@ -1,64 +1,122 @@
-# Idle Undead — Game Design
+# Idle Undead — Game Design (v2)
 
-Tap Titans-style idle RPG. You are an undead champion carving through the living
-factions of a high-fantasy world. Tap to attack; build an army, gear and pets for
-idle damage; rebirth for Souls to buy Relics and eventually fuse classes.
+> Tap Titans-style idle RPG where *you* are the undead, carving through the living
+> factions of a high-fantasy world. This document is the source of truth for what
+> the game is. `ROADMAP.md` is the order we build it in.
+
+## Pillars
+1. **Tapping feels violent.** Every tap has impact: sprite flinch, hit flash,
+   screen shake on crits, damage numbers that pop, boss kills that shatter.
+2. **Your build is visible.** The skill *tree* is a real graph you navigate; your
+   character sprite evolves with it; your gear loadout is a set of choices, not a
+   price list.
+3. **The world pushes back.** Each zone has its own painted backdrop, faction,
+   music cue and boss with an entrance. You are the monster invading *their* land.
+4. **Every session ends with a goal.** The next unlock (evolution, zone, gear
+   affix, relic) is always on screen.
+
+## Fantasy & tone
+Grim but playful. The living are pompous (Holy Order), haughty (Elves), stubborn
+(Dwarves), brutish (Orcs), officious (Kingdom), capricious (Fae), arrogant
+(Dragonkin) and rival-evil (Demon Cult). Bosses taunt on entry; the undead hero
+never speaks — the army does.
 
 ## Core loop
-1. Tap the enemy → tap damage. Enemies drop Gold.
-2. Spend Gold on: Hero levels (tap dmg), Army units (idle DPS), Gear, Pets.
-3. Every stage = 5 kills; every 10th stage is a timed Boss (30s). Beat it to advance.
-4. Stuck? Rebirth → reset stage/gold/upgrades, keep Souls + Relics + class unlocks.
+Tap → gold → upgrade hero / army / pets → clear stage (5 kills) → boss every 10
+stages (timed) → new zone every 10 stages → wall → **rebirth** → Souls → Relics →
+deeper run, class evolution, fusion.
 
-## Classes (essence → 3 tiers)
-| Class    | Essence | T1        | T2               | T3            | Playstyle              |
-|----------|---------|-----------|------------------|---------------|------------------------|
-| Skeleton | Bone    | Skeleton  | Bone Knight      | Lich          | Army + crits, phylactery on rebirth |
-| Ghost    | Spirit  | Ghost     | Wraith           | Banshee Queen | Idle/offline, phase combo |
-| Vampire  | Blood   | Vampire   | Vampire Lord     | Nosferatu     | Tap frenzy, gold lifesteal |
-| Ghoul    | Flesh   | Ghoul     | Ghast            | Abomination   | Kill-stacking growth, rot DoT |
+## Player character
+### Classes (essence → 3 tiers)
+| Class    | Essence | T1       | T2           | T3            | Identity |
+|----------|---------|----------|--------------|---------------|----------|
+| Skeleton | Bone    | Skeleton | Bone Knight  | Lich          | crits, army, phylactery (keep gold on rebirth) |
+| Ghost    | Spirit  | Ghost    | Wraith       | Banshee Queen | offline/idle, tap combos |
+| Vampire  | Blood   | Vampire  | Vampire Lord | Nosferatu     | tap frenzy, gold lifesteal |
+| Ghoul    | Flesh   | Ghoul    | Ghast        | Abomination   | kill-stacking growth, rot DoT |
 
-Each class has a skill tree of 3 tiers. Spending enough points in a tier unlocks
-the next tier and *evolves* the character (new name, sprite, and a capstone
-passive that changes play).
+Later classes (post-launch): Mummy (Dust — curses/slow bosses), Wight (Frost —
+freeze boss timer), Revenant (Hate — damage scales with rebirths).
 
-Skill points: 1 per 20 hero levels + 1 per 20 stages reached.
-Reset on rebirth (hero levels reset), but Relics can refund/bank points.
+### Skill tree (graph, not list)
+Each class has a hand-laid node graph: three vertical tiers, 4 nodes per tier
+plus a capstone at each tier boundary. Edges are explicit (`requires`). The UI
+renders it as a pannable graph: locked (dark), available (lit border), ranked
+(filled), maxed (gold). The capstone shows the *evolved sprite* as a preview and
+the path to it is highlighted ("3 more points to Bone Knight"). Skill points:
+1 per 20 hero levels + 1 per 20 stages; relic *Tome of Unlearning* banks points
+through rebirth.
 
-## Idle damage sources
-- **Army** (units: Zombie Horde, Skeleton Archers, Bat Swarm, Bone Golem …): each
-  has base DPS, cost curve `base * 1.08^level`, and milestone multipliers at
-  levels 10/25/50/100.
-- **Gear** (slots: Weapon, Armor, Trinket, Crown): each gives a multiplier to
-  tap / idle / gold / crit. Upgradable with gold; rarity rolls on drops.
-- **Pets**: one active, others give passive bonus. Active pet attacks every N
-  seconds with damage scaled from tap damage (like Tap Titans pets).
+### Gear (rework — drops, not purchases)
+Gear is **found**, never bought with gold.
+- **Sources:** every boss kill drops one item (rarity weighted by stage); zone
+  chests (one per zone first clear); daily reward; premium "Grave Chest".
+- **Slots:** Weapon, Armor, Crown, Trinket, Charm (5). One item per slot.
+- **Rarity:** Common / Uncommon / Rare / Epic / Legendary — sets affix count
+  (1–4) and roll range.
+- **Affixes** roll from pools that push *builds*, e.g. `+% tap dmg`, `+% army`,
+  `+% pet attack speed`, `+combo max`, `+% gold from bosses`, `+% crit dmg`,
+  `+s boss timer`, `+% rot`, `+% kill growth`, `+% offline`. Some are
+  essence-tagged: Blood items roll lifesteal, Spirit items roll offline.
+- **Sets:** 3 pieces of one essence → set bonus (e.g. *Bone set*: crits refund
+  army cost 5%).
+- **Salvage** → Scrap; Scrap **reforges** one affix. Inventory 30 slots (premium
+  expands).
+- **Loadouts:** 2 saved loadouts (swap between "boss" and "farm" builds).
 
-## Enemies & factions
-Zones cycle every 10 stages through factions: Holy Order, Elven Wardens,
-Dwarven Legion, Orc Warbands, Human Kingdom, Fae Court, Dragonkin, Demon Cult.
-Enemy HP: `10 * 1.18^stage * (boss ? 6 : 1)`. Gold: `~HP^0.7 * goldMult`.
+### Idle sources
+- **Army** — 8 units, gold cost curve, milestone multipliers at 10/25/50/100/200.
+- **Pets** — one active (attacks on a timer, scaled from tap), all owned give passives.
+- **Gear** — affixes as above.
 
-## Rebirth
-Souls gained = `floor((maxStage / 10)^1.6)` (plus class/relic multipliers). Requires
-maxStage ≥ 20 and at least 10 stages of progress past the run's starting stage.
-Relics (permanent, cost Souls): global damage, gold, offline time, starting
-stage, keep skill points, unlock class fusion.
-**Fusion** (unlocked by relic "Grave Pact" after 2 rebirths): choose a secondary
-class — you gain its Tier-1 nodes at 50% power and a fused title
-(Skeleton+Vampire = Blood Knight, Ghost+Ghoul = Revenant …).
+## World
+8 factions cycle by zone (10 stages each). Each zone has a painted backdrop,
+5 enemy types, 1 boss. Bosses get an entrance banner + taunt line. Zone
+transition = backdrop crossfade + "Entering the Elven Wardens' Moonwood" toast.
+
+## Prestige
+**Rebirth** (≥ stage 20 and ≥10 stages past run start) → Souls =
+`floor((maxStage/10)^1.6) × soulsMult`. Keeps Souls, Relics, gear inventory,
+class unlocks, achievements. **Relics** (Souls shop, permanent). **Fusion**
+(Grave Pact relic): secondary class grants its T1 nodes at half power and a
+fused title (Blood Knight, Revenant, …).
+
+## Monetization (fair, genre-standard)
+Premium currency **Soulfire** (✧).
+- **Earn free:** daily login, achievements, first boss kill per zone, rebirth milestones.
+- **Rewarded ads** (opt-in, capped/day): 2× gold for 4h, instant boss-timer reset,
+  double offline earnings, revive failed boss attempt.
+- **IAP:** Soulfire packs; *Remove Ads* (one-time, includes the ad boosts passively);
+  *Starter Pack*; class **skins** (cosmetic, evolve with tiers); premium pets;
+  time-skips (4h/12h idle gold); inventory + loadout slots; Grave Chests
+  (gear, with pity counter — no blind boxes without a visible pity).
+- **Never sold:** stages, souls directly, skill points. Progression is time or skill.
+- Implemented behind `services/monetization.ts` (fake store in dev; RevenueCat +
+  AdMob Capacitor plugins in prod). Consent (GDPR/ATT) before any ad SDK init.
+
+## Production checklist (what "shippable" means)
+- FTUE: 90-second guided first fight; tooltips on first open of each panel.
+- Settings: sound, music, haptics, damage-number density, notifications, language.
+- Push notification when offline cap is reached ("Your army has earned 1.2M gold").
+- Save: versioned + migrated, autosave 5s, export/import code, cloud sync (Game
+  Center / Play Games) later; light tamper check (HMAC of save).
+- Analytics + crash reporting behind `services/telemetry.ts` (no PII).
+- Performance: 60fps on a 2019 mid phone; sprite atlas; no layout thrash from
+  10 Hz state updates (battle view rerenders, drawers memoized).
+- Store assets: icon, splash, screenshots, privacy policy, age rating (no gore).
+- Localization scaffold: all strings through `t()`.
+- Accessibility: reduce-motion honours OS setting; min 44pt targets; colour-blind safe rarity (icons + colour).
+
+## Art direction & pipeline
+Hand-painted dark-fantasy, saturated accents, readable silhouettes at 120px.
+Generated with Codex `image_gen` (transparent PNG), manifest-driven
+(`art/manifest.json` → `scripts/gen-art.mjs`), resized to 512px sprites / 1080px
+backgrounds, atlased for prod. Each enemy has: idle bob (CSS), hit flinch,
+death dissolve (shader-free: scale + fade + particle burst). Hero has attack
+lunge on tap. Bosses are 1.5× scale with an aura.
 
 ## Numbers
-Plain JS numbers; formatted K/M/B/T then aa, ab … Offline progress capped at 8h
-base (Ghost tree + relics extend).
-
-## Tech
-Vite + React + TypeScript. Pure-TS engine in `src/game` (deterministic, tested
-with Vitest). UI in `src/ui`. Capacitor wrapper for iOS/Android later.
-
-## Sprite conventions
-All sprites are SVG, 64x64 viewBox, pixel/chunky-fantasy style, transparent bg, under `public/sprites/`:
-- `classes/{classId}_{tier}.svg` — tier 1..3 (e.g. `skeleton_3.svg` = Lich)
-- `enemies/{factionId}_{i}.svg` — i = 0..4 matching `FACTIONS[].enemies` order; `enemies/{factionId}_boss.svg`
-- `units/{unitId}.svg`, `pets/{petId}.svg`
-UI helper: `spriteUrl(kind, id)` in `src/ui/sprites.ts`; missing files fall back to a placeholder.
+Plain JS numbers formatted K/M/B/T/aa…; stage cap 3000 (HP overflow guard).
+Enemy HP `10 × 1.22^(stage−1) × (1+0.05·stage) × (boss ? 6 : 1)`; gold `1.6·HP^0.68`.
+Balance target: first run walls ~stage 100–130 at ~1.5 h active; T2 evolution
+~30 min; T3 after 1–2 rebirths.
