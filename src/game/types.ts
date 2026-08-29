@@ -164,12 +164,19 @@ export interface GameState {
 
   rebirths: number;
   totalSouls: number;
+  /** premium currency */
+  soulfire: number;
+  adsRemoved: boolean;
+  boosts: { goldUntil: number; damageUntil: number; offlineDoubleNext: boolean; adBoostsToday: number; adBoostDay: number };
+  claimedDaily: number; // day index of last daily claim
+  ownedSkins: string[];
+  inventoryBonus: number;
   comboStacks: number;
   comboTimer: number;
   killStacks: number;
   petCooldown: number;
 
   lastTick: number;   // ms epoch
-  stats: { taps: number; kills: number; goldEarned: number; damageDealt: number; playSeconds: number };
+  stats: { taps: number; kills: number; goldEarned: number; damageDealt: number; playSeconds: number; dailyStreak?: number; starterBought?: number; chestsOpened?: number };
   pendingOffline: { seconds: number; gold: number } | null;
 }

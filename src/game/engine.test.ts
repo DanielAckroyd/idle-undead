@@ -3,6 +3,8 @@ import { newGame, chooseClass, tap, tick, buyUnit, buyPet, setActivePet, learnSk
 import { serialize, deserialize } from './save';
 import { rollItem, addItem, equip, salvage, reforge, activeSets, gearEffects } from './items';
 import { INVENTORY_CAP } from './data/items';
+import { claimDaily, applyAdBoost, buyShop, grantPurchase } from './premium';
+import { AD_BOOSTS_PER_DAY } from './data/products';
 import { derive } from './stats';
 import { fmt, geomCost, maxAffordable } from './numbers';
 import { CLASSES } from './data/classes';
@@ -257,5 +259,46 @@ describe('items', () => {
     const out = deserialize(JSON.stringify(raw))!;
     expect(out.version).toBe(2);
     expect((out as unknown as { gear?: unknown }).gear).toBeUndefined();
+  });
+});
+
+describe('premium', () => {
+  it('daily claim once per day with streak', () => {
+    const s = fresh();
+    const day = 86_400_000;
+    expect(claimDaily(s, 10 * day + 5)).toBe(10);
+    expect(claimDaily(s, 10 * day + 9)).toBe(0);
+    expect(claimDaily(s, 11 * day + 1)).toBe(10);
+    expect(claimDaily(s, 12 * day + 1)).toBe(15);
+    expect(s.soulfire).toBe(35);
+  });
+  it('ad boosts are capped per day unless ads removed; gold boost doubles drops', () => {
+    const s = fresh();
+    const now = 1_000_000;
+    for (let i = 0; i < AD_BOOSTS_PER_DAY; i++) expect(applyAdBoost(s, 'ad_gold', now)).toBe(true);
+    expect(applyAdBoost(s, 'ad_gold', now)).toBe(false);
+    s.adsRemoved = true;
+    expect(applyAdBoost(s, 'ad_gold', now)).toBe(true);
+    s.lastTick = now;
+    const g0 = s.gold; s.enemy.hp = 1; tap(s, derive(s), 1);
+    const boosted = s.gold - g0;
+    const t = fresh(); t.lastTick = now; t.enemy.hp = 1; tap(t, derive(t), 1);
+    expect(boosted).toBeCloseTo(t.gold * 2);
+  });
+  it('shop: time skip needs idle dps, chest pity, skins once, IAP grants', () => {
+    const s = fresh();
+    s.soulfire = 1000;
+    expect(buyShop(s, 'skip_4h', 5).ok).toBe(false);
+    s.gold = 1e6; buyUnit(s, 'zombies', 10); s.gold = 0;
+    expect(buyShop(s, 'skip_4h', 5).ok).toBe(true);
+    expect(s.gold).toBeGreaterThan(0);
+    expect(buyShop(s, 'skin_ghost_ember', 5).ok).toBe(true);
+    expect(buyShop(s, 'skin_ghost_ember', 5).ok).toBe(false);
+    for (let i = 0; i < 5; i++) buyShop(s, 'chest', 100 + i);
+    expect(s.inventory.some(i => i.rarity === 'legendary')).toBe(true);
+    expect(grantPurchase(s, 'remove_ads', 5)).toBe(true);
+    expect(s.adsRemoved).toBe(true);
+    expect(grantPurchase(s, 'starter', 5)).toBe(true);
+    expect(grantPurchase(s, 'starter', 5)).toBe(false);
   });
 });

@@ -28,7 +28,11 @@ export function deserialize(json: string): GameState | null {
     s.inventory = s.inventory.filter(i => i && typeof i.uid === 'string' && Array.isArray(i.affixes));
     if (typeof s.equipped !== 'object' || s.equipped === null) s.equipped = { ...base.equipped };
     for (const k of Object.keys(base.equipped) as (keyof typeof base.equipped)[]) if (s.equipped[k] && !s.inventory.some(i => i.uid === s.equipped[k])) s.equipped[k] = null;
-    const numKeys = ['stage', 'maxStage', 'runStartStage', 'killsThisStage', 'gold', 'souls', 'heroLevel', 'skillPointsSpent', 'bankedSkillPoints', 'rebirths', 'totalSouls', 'comboStacks', 'comboTimer', 'killStacks', 'petCooldown', 'lastTick', 'scrap'] as const;
+    const numKeys = ['stage', 'maxStage', 'runStartStage', 'killsThisStage', 'gold', 'souls', 'heroLevel', 'skillPointsSpent', 'bankedSkillPoints', 'rebirths', 'totalSouls', 'comboStacks', 'comboTimer', 'killStacks', 'petCooldown', 'lastTick', 'scrap', 'soulfire', 'inventoryBonus', 'claimedDaily'] as const;
+    if (typeof s.boosts !== 'object' || s.boosts === null) s.boosts = { ...base.boosts };
+    else s.boosts = { ...base.boosts, ...s.boosts };
+    if (!Array.isArray(s.ownedSkins)) s.ownedSkins = [];
+    s.adsRemoved = s.adsRemoved === true;
     for (const k of numKeys) if (!Number.isFinite(s[k])) (s as unknown as Record<string, number>)[k] = base[k];
     for (const k of Object.keys(base.stats) as (keyof GameState['stats'])[]) if (!Number.isFinite(s.stats[k])) s.stats[k] = 0;
     if (!Number.isFinite(s.enemy.hp) || !Number.isFinite(s.enemy.maxHp) || s.enemy.maxHp <= 0) s.enemy = makeEnemy(s.stage, s.fightingBoss, s.seed, 30);

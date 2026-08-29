@@ -2,6 +2,7 @@ import type { ClassId, Enemy, GameState } from './types';
 import { CLASSES } from './data/classes';
 import { UNITS } from './data/units';
 import { addItem, rollItem } from './items';
+import { SOULFIRE_FIRST_ZONE_CLEAR } from './data/products';
 import { PETS } from './data/pets';
 import { RELICS } from './data/relics';
 import { BOSS_EVERY, KILLS_PER_STAGE, enemyGold, enemyMaxHp, factionForStage, isBossStage } from './data/enemies';
@@ -34,7 +35,10 @@ export function newGame(seed = Date.now()): GameState {
     gold: 0, souls: 0, heroLevel: 0, skillPointsSpent: 0, bankedSkillPoints: 0,
     skills: {}, army: {}, pets: {}, activePet: null, relics: {},
     inventory: [], equipped: { weapon: null, armor: null, crown: null, trinket: null, charm: null }, scrap: 0, lastDrop: null,
-    rebirths: 0, totalSouls: 0, comboStacks: 0, comboTimer: 0, killStacks: 0, petCooldown: 0,
+    rebirths: 0, totalSouls: 0, soulfire: 0, adsRemoved: false,
+    boosts: { goldUntil: 0, damageUntil: 0, offlineDoubleNext: false, adBoostsToday: 0, adBoostDay: 0 },
+    claimedDaily: -1, ownedSkins: [], inventoryBonus: 0,
+    comboStacks: 0, comboTimer: 0, killStacks: 0, petCooldown: 0,
     lastTick: Date.now(),
     stats: { taps: 0, kills: 0, goldEarned: 0, damageDealt: 0, playSeconds: 0 },
     pendingOffline: null,
@@ -57,7 +61,7 @@ function spawn(s: GameState, d: Derived) {
 /** Apply damage; handles kills, gold, stage advance. Returns actual damage dealt. */
 export function dealDamage(s: GameState, d: Derived, amount: number, source: 'tap' | 'idle' | 'pet' | 'rot'): number {
   if (amount <= 0 || s.enemy.hp <= 0) return 0;
-  const dmg = Math.min(s.enemy.hp, amount * (s.enemy.isBoss ? d.bossMult : 1));
+  const dmg = Math.min(s.enemy.hp, amount * (s.enemy.isBoss ? d.bossMult : 1) * (s.boosts.damageUntil > s.lastTick ? 2 : 1));
   s.enemy.hp -= dmg;
   s.stats.damageDealt += dmg;
   if (source === 'tap' && d.effects.lifestealGold) gain(s, dmg * d.effects.lifestealGold * d.goldMult);
@@ -67,7 +71,7 @@ export function dealDamage(s: GameState, d: Derived, amount: number, source: 'ta
 
 function onKill(s: GameState, d: Derived) {
   const wasBoss = s.enemy.isBoss;
-  const gold = enemyGold(s.stage, wasBoss) * d.goldMult * (wasBoss ? 1 + (d.effects.bossGoldMult ?? 0) : 1);
+  const gold = enemyGold(s.stage, wasBoss) * d.goldMult * (wasBoss ? 1 + (d.effects.bossGoldMult ?? 0) : 1) * (s.boosts.goldUntil > s.lastTick ? 2 : 1);
   gain(s, gold);
   s.stats.kills++;
   s.killStacks++;
@@ -75,6 +79,7 @@ function onKill(s: GameState, d: Derived) {
 
   if (wasBoss) {
     addItem(s, rollItem(s.seed + s.stats.kills * 977 + s.stage, s.stage));
+    if (s.stage === s.maxStage) s.soulfire += SOULFIRE_FIRST_ZONE_CLEAR;
     advanceStage(s, 1);
   } else {
     s.killsThisStage++;
@@ -334,7 +339,8 @@ export function applyOffline(s: GameState, nowMs: number) {
   if (d.idleDps <= 0) return;
   const hp = enemyMaxHp(s.stage, false);
   const kills = (d.idleDps * capped) / hp;
-  const gold = kills * enemyGold(s.stage, false) * d.goldMult * d.offlineMult;
+  let gold = kills * enemyGold(s.stage, false) * d.goldMult * d.offlineMult;
+  if (s.boosts.offlineDoubleNext) { gold *= 2; s.boosts.offlineDoubleNext = false; }
   if (gold > 0) {
     gain(s, gold);
     s.pendingOffline = { seconds: capped, gold };
