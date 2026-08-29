@@ -28,6 +28,22 @@ export function SoulIcon({ size = 13, className }: IconProps) {
   );
 }
 
+/** Soulfire (✧) — the premium currency. Cold green flame, so it never reads as gold. */
+export function SoulfireIcon({ size = 13, className }: IconProps) {
+  return (
+    <svg viewBox="0 0 16 16" width={size} height={size} className={className} aria-hidden="true">
+      <path
+        d="M8 1c.6 2.6-.4 3.9-1.7 5.2C4.7 7.8 3.6 9 3.6 10.6A4.4 4.4 0 0 0 8 15a4.4 4.4 0 0 0 4.4-4.4c0-2.4-1.7-3.6-2.6-5.5-.5 1-1.1 1.6-1.7 2 .5-2.2.4-4.3-.1-6.1z"
+        fill="#4ee0b4"
+      />
+      <path
+        d="M8 7.4c.5 1.2 1.5 1.9 1.5 3.3A1.6 1.6 0 0 1 8 12.4a1.6 1.6 0 0 1-1.5-1.7c0-1.1.9-1.9 1.5-3.3z"
+        fill="#d9fff4"
+      />
+    </svg>
+  );
+}
+
 export function MenuIcon({ size = 20, className }: IconProps) {
   return (
     <svg viewBox="0 0 24 24" width={size} height={size} className={className} aria-hidden="true">

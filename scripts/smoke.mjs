@@ -1,5 +1,6 @@
 // Headless smoke test of the whole flow: main menu -> new game -> class -> battle,
-// tap juice, every drawer snap state, every tab. Usage: node scripts/smoke.mjs <outdir>
+// tap juice, every drawer snap state, every tab, the skill graph and the shop.
+// Also re-checks the arena layout on a small phone. Usage: node scripts/smoke.mjs <outdir>
 import { chromium } from 'playwright';
 import { spawn } from 'node:child_process';
 import { mkdirSync } from 'node:fs';
@@ -27,6 +28,10 @@ page.on('requestfailed', r => {
   const t = `${r.url()} ${r.failure()?.errorText ?? ''}`;
   if (!expectedMiss(t)) errors.push('requestfailed: ' + t);
 });
+
+// The dev FakeStore asks for confirmation via window.confirm; Playwright dismisses
+// dialogs by default, which would make every purchase path a no-op.
+page.on('dialog', d => d.accept().catch(() => {}));
 
 const shot = (name) => page.screenshot({ path: `${out}/${name}.png` });
 const btn = (name) => page.getByRole('button', { name: new RegExp(name, 'i') }).first();
@@ -85,11 +90,88 @@ try {
   }
   await shot('12-progress');
 
-  for (const tab of ['Hero', 'Skills', 'Army', 'Gear', 'Pets', 'Rebirth']) {
+  for (const tab of ['Hero', 'Skills', 'Army', 'Gear', 'Pets', 'Shop', 'Rebirth']) {
     await page.getByRole('button', { name: new RegExp(`^${tab}$`, 'i') }).first().click();
     await page.waitForTimeout(250);
     await shot(`tab-${tab}`);
   }
+
+  // --- skill graph: open, learn, inspect, zoom ---
+  await page.getByRole('button', { name: /^Skills$/i }).first().click();
+  await page.waitForTimeout(400);
+  if (!(await page.locator('.graph-canvas').count())) errors.push('skills: graph did not render');
+  await shot('15-skills-graph');
+
+  for (let i = 0; i < 6; i++) {
+    const node = page.locator('.node-available').first();
+    if (!(await node.count())) break;
+    await node.click();
+    await page.waitForTimeout(160);
+    const learn = page.locator('.btn.learn:not([disabled])').first();
+    if (!(await learn.count())) break;
+    await learn.click();
+    await page.waitForTimeout(140);
+  }
+  await shot('16-skills-learned');
+
+  // the capstone sheet: an evolution preview plus its "N points to evolve" gate
+  const capstone = page.locator('.node-capstone').first();
+  if (await capstone.count()) {
+    await capstone.click();
+    await page.waitForTimeout(250);
+    await shot('17-skills-capstone');
+  }
+
+  // pan + zoom
+  await page.getByRole('button', { name: /Zoom out/i }).click();
+  await page.getByRole('button', { name: /Zoom out/i }).click();
+  await page.waitForTimeout(250);
+  await shot('18-skills-zoomed-out');
+  const gv = await page.locator('.graph-viewport').boundingBox();
+  await page.mouse.move(gv.x + gv.width / 2, gv.y + gv.height * 0.7);
+  await page.mouse.down();
+  await page.mouse.move(gv.x + gv.width / 2, gv.y + gv.height * 0.25, { steps: 12 });
+  await page.mouse.up();
+  await page.waitForTimeout(200);
+  await shot('19-skills-panned');
+
+  // --- shop: daily, ad boost, soulfire purchase, IAP, restore ---
+  await page.getByRole('button', { name: /^Shop$/i }).first().click();
+  await page.waitForTimeout(300);
+  await shot('20-shop-top');
+
+  // the button's accessible name includes its reward chip ("Claim +10 ✧")
+  const claim = page.locator('.shop-daily .btn:not([disabled])').first();
+  if (await claim.count()) {
+    await claim.click();
+    await page.waitForTimeout(300);
+    await shot('21-shop-daily-claimed');
+  }
+
+  // 2x Gold: dev store confirms the "ad", then the boost chip appears in the HUD
+  const boost = page.locator('.boost-card:not([disabled])').first();
+  if (await boost.count()) {
+    await boost.click();
+    await page.waitForTimeout(400);
+    await shot('22-shop-boost');
+    if (!(await page.locator('.chip.boost').count())) errors.push('shop: ad boost did not reach the HUD chips');
+  }
+
+  // buy soulfire with real money, then spend it in the soulfire shop
+  const pack = page.getByRole('button', { name: /^\$1\.99$/ }).first();
+  if (await pack.count()) {
+    await pack.click();
+    await page.waitForTimeout(400);
+  }
+  await page.locator('.shop-card.chest .btn').first().click().catch(() => {});
+  await page.waitForTimeout(350);
+  await shot('23-shop-purchased');
+
+  await page.getByRole('button', { name: /Restore purchases/i }).click();
+  await page.waitForTimeout(350);
+  await page.locator('.tabbody').evaluate(el => { el.scrollTop = el.scrollHeight; }).catch(() => {});
+  await page.waitForTimeout(150);
+  await shot('24-shop-packs');
 
   // gear detail: open the newest item
   await page.getByRole('button', { name: /^Gear$/i }).first().click();
@@ -109,6 +191,29 @@ try {
   await btn('^Continue').click();
   await page.waitForTimeout(400);
   await shot('09-continued');
+
+  // small-phone pass: the arena must stay legible at 360x640 with the drawer half
+  // open — the sprite anchored to its ground line, bands clear of the art.
+  const sm = await browser.newPage({ viewport: { width: 360, height: 640 }, hasTouch: true, isMobile: true });
+  sm.on('pageerror', e => errors.push('pageerror(360): ' + e.message));
+  await sm.goto('http://localhost:5199/');
+  await sm.waitForTimeout(600);
+  // a fresh context, so there is no save to continue from
+  await sm.getByRole('button', { name: /^New Game$/i }).click();
+  await sm.waitForTimeout(250);
+  await sm.getByText(/Skeleton/i).first().click();
+  await sm.waitForTimeout(400);
+  const smb = await sm.locator('.arena').boundingBox();
+  for (let i = 0; i < 30; i++) await sm.mouse.click(smb.x + smb.width / 2, smb.y + smb.height * 0.45, { delay: 2 });
+  await sm.waitForTimeout(300);
+  await sm.screenshot({ path: `${out}/25-small-arena.png` });
+  await sm.getByRole('button', { name: /^Skills$/i }).first().click();
+  await sm.waitForTimeout(400);
+  await sm.screenshot({ path: `${out}/26-small-skills.png` });
+  await sm.getByRole('button', { name: /^Shop$/i }).first().click();
+  await sm.waitForTimeout(400);
+  await sm.screenshot({ path: `${out}/27-small-shop.png` });
+  await sm.close();
 
   // reduce-motion pass: everything must still render and time out correctly
   const rm = await browser.newPage({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true, reducedMotion: 'reduce' });

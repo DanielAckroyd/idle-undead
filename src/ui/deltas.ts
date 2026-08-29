@@ -5,8 +5,7 @@
  * one replaced record is safe (and much cheaper than a deep copy).
  */
 import type { GameState } from '../game/types';
-import { derive, unitDps, type Derived } from '../game/stats';
-import { UNITS } from '../game/data/units';
+import { derive, type Derived } from '../game/stats';
 import { fmt } from '../game/numbers';
 
 export interface Delta {
@@ -65,23 +64,6 @@ export function equipDelta(s: GameState, d: Derived, uid: string): Delta {
   if (!it) return { tap: 0, dps: 0 };
   return cached(`e|${uid}|${s.equipped[it.slot]}|${d.tapDamage}|${d.idleDps}`,
     () => diff(derive({ ...s, equipped: { ...s.equipped, [it.slot]: uid } }), d));
-}
-
-/**
- * Everything that scales raw army DPS into the number the header shows. Taken as
- * the ratio of derived to raw where possible so it can never drift from stats.ts.
- */
-export function armyMultiplier(s: GameState, d: Derived): number {
-  const raw = UNITS.reduce((sum, u) => sum + unitDps(u.id, s.army[u.id] ?? 0), 0);
-  if (raw > 0) return d.armyDps / raw;
-  const e = d.effects;
-  return (1 + (e.armyMult ?? 0)) * (1 + (e.idleMult ?? 0)) * (1 + (e.allMult ?? 0))
-    * (1 + (e.killGrowth ?? 0) * s.killStacks);
-}
-
-/** A unit's share of the DPS the header shows, not its raw sheet value. */
-export function effectiveUnitDps(s: GameState, d: Derived, id: string): number {
-  return unitDps(id, s.army[id] ?? 0) * armyMultiplier(s, d);
 }
 
 /** `+1.2K DPS`, or an em dash when the purchase grants nothing measurable. */

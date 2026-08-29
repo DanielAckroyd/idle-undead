@@ -1,11 +1,11 @@
 import { memo } from 'react';
 import type { GameState, UnitDef } from '../../game/types';
-import type { Derived } from '../../game/stats';
+import { effectiveUnitDps, type Derived } from '../../game/stats';
 import { UNITS } from '../../game/data/units';
 import { buyUnit, unitCost, unitMaxAffordable } from '../../game/engine';
 import { fmt } from '../../game/numbers';
 import { mutate } from '../../store';
-import { effectiveUnitDps, plus, unitDelta } from '../deltas';
+import { plus, unitDelta } from '../deltas';
 import Sprite from '../Sprite';
 
 function Buy({ s, d, id, count, label }: { s: GameState; d: Derived; id: string; count: number; label: string }) {
@@ -30,7 +30,7 @@ function Buy({ s, d, id, count, label }: { s: GameState; d: Derived; id: string;
 function UnitRow({ s, d, u }: { s: GameState; d: Derived; u: UnitDef }) {
   const lvl = s.army[u.id] ?? 0;
   const max = unitMaxAffordable(s, u.id);
-  const effective = effectiveUnitDps(s, d, u.id);
+  const effective = effectiveUnitDps(d, u.id, lvl);
   return (
     <div className="card unit-row">
       <div className="unit-head">

@@ -94,11 +94,25 @@ export function ripple(host: HTMLElement | null, x: number, y: number) {
   ], { duration: 420, easing: 'cubic-bezier(.2,.7,.3,1)' });
 }
 
-/** Floating damage number: eases up and fades with a little horizontal jitter. */
-export function floatDamage(host: HTMLElement | null, x: number, y: number, text: string, crit: boolean) {
+/** Who dealt the hit — each source gets its own weight so the arena stays readable. */
+export type HitSource = 'tap' | 'auto' | 'pet';
+
+/**
+ * Floating damage number: eases up and fades with a little horizontal jitter.
+ * Player taps read loudest; auto-taps are small and dim and pet hits are violet,
+ * so a busy idle screen never drowns out the damage the player caused.
+ */
+export function floatDamage(
+  host: HTMLElement | null,
+  x: number,
+  y: number,
+  text: string,
+  crit: boolean,
+  source: HitSource = 'tap',
+) {
   if (!host) return;
   const el = document.createElement('span');
-  el.className = crit ? 'fx-dmg fx-dmg-crit' : 'fx-dmg';
+  el.className = `fx-dmg fx-dmg-${source}${crit ? ' fx-dmg-crit' : ''}`;
   el.textContent = crit ? `${text}!` : text;
   el.style.left = `${x}px`;
   el.style.top = `${y}px`;
@@ -109,12 +123,14 @@ export function floatDamage(host: HTMLElement | null, x: number, y: number, text
     ], { duration: 500, easing: 'linear' });
     return;
   }
-  const jitter = (Math.random() * 2 - 1) * 26;
-  const rise = crit ? -104 : -78;
+  const quiet = source !== 'tap';
+  const jitter = (Math.random() * 2 - 1) * (quiet ? 16 : 26);
+  const rise = crit ? -104 : quiet ? -52 : -78;
+  const pop = crit ? 1.3 : quiet ? 1 : 1.1;
   ephemeral(host, el, [
     { transform: 'translate(-50%, -50%) scale(0.7)', opacity: 0 },
     {
-      transform: `translate(calc(-50% + ${jitter * 0.3}px), calc(-50% - 16px)) scale(${crit ? 1.3 : 1.1})`,
+      transform: `translate(calc(-50% + ${jitter * 0.3}px), calc(-50% - ${quiet ? 10 : 16}px)) scale(${pop})`,
       opacity: 1,
       offset: 0.18,
     },
@@ -122,7 +138,23 @@ export function floatDamage(host: HTMLElement | null, x: number, y: number, text
       transform: `translate(calc(-50% + ${jitter}px), calc(-50% + ${rise}px)) scale(${crit ? 1.05 : 0.9})`,
       opacity: 0,
     },
-  ], { duration: crit ? 900 : 800, easing: 'cubic-bezier(.16,.9,.3,1)' });
+  ], { duration: crit ? 900 : quiet ? 620 : 800, easing: 'cubic-bezier(.16,.9,.3,1)' });
+}
+
+/** One-shot centred announcement (boss escaped, …). */
+export function announce(host: HTMLElement | null, text: string, tone: 'bad' | 'good' = 'bad') {
+  if (!host) return;
+  const el = document.createElement('div');
+  el.className = `fx-announce fx-announce-${tone}`;
+  el.textContent = text;
+  ephemeral(host, el, reducedMotion()
+    ? [{ opacity: 1 }, { opacity: 1, offset: 0.8 }, { opacity: 0 }]
+    : [
+      { transform: 'translate(-50%, -50%) scale(0.86)', opacity: 0 },
+      { transform: 'translate(-50%, -50%) scale(1)', opacity: 1, offset: 0.16 },
+      { transform: 'translate(-50%, -50%) scale(1)', opacity: 1, offset: 0.74 },
+      { transform: 'translate(-50%, -60%) scale(1)', opacity: 0 },
+    ], { duration: 1700, easing: 'ease-out' });
 }
 
 export interface DeathOpts {

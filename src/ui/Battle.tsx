@@ -1,13 +1,13 @@
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import type { GameState } from '../game/types';
+import type { Enemy, GameState } from '../game/types';
 import { derive, type Derived } from '../game/stats';
 import { makeEnemy, tap } from '../game/engine';
 import { BOSS_EVERY, FACTIONS, KILLS_PER_STAGE, factionForStage, isBossStage } from '../game/data/enemies';
 import { RARITY_INFO } from '../game/data/items';
-import { fmt } from '../game/numbers';
+import { fmt, fmtTime } from '../game/numbers';
 import { mutate } from '../store';
 import Sprite from './Sprite';
-import { GoldIcon, SoulIcon, MenuIcon, GearIcon } from './Icons';
+import { GoldIcon, SoulIcon, SoulfireIcon, MenuIcon, GearIcon } from './Icons';
 import {
   artUrl,
   backdropUrl,
@@ -18,10 +18,34 @@ import {
   spriteUrl,
   useArt,
 } from './sprites';
-import { deathBurst, floatDamage, hitReact, lunge, ripple, shake } from './fx';
+import { announce, deathBurst, floatDamage, hitReact, lunge, ripple, shake } from './fx';
 
-const ENEMY_SIZE = 132;
 const CROSSFADE_MS = 900;
+
+/**
+ * The arena is a stage, not a stack of flex rows: both fighters are anchored to a
+ * ground line and the HUD lives in bands above and below them. These fractions are
+ * the single source of truth — CSS gets them as custom properties, the FX layer
+ * uses them to place floats and death bursts.
+ */
+const GROUND_Y = 0.78;   // ground line, as a fraction of arena height
+const ENEMY_X = 0.62;    // enemy stands right of centre
+const HERO_X = 0.18;
+const ENEMY_H = 0.58;    // sprite height as a fraction of arena height
+const BOSS_H = 0.70;
+const HERO_H = 0.32;
+
+const STAGE_VARS = {
+  '--ground': `${GROUND_Y * 100}%`,
+  '--enemy-x': `${ENEMY_X * 100}%`,
+  '--hero-x': `${HERO_X * 100}%`,
+  '--enemy-h': `${ENEMY_H * 100}cqh`,
+  '--boss-h': `${BOSS_H * 100}cqh`,
+  '--hero-h': `${HERO_H * 100}cqh`,
+} as React.CSSProperties;
+
+/** Never spray more than this many damage numbers from one 100 ms sim step. */
+const MAX_FLOATS_PER_FRAME = 6;
 
 interface BattleProps {
   s: GameState;
@@ -32,7 +56,7 @@ interface BattleProps {
 
 /** "Elven Wardens’" not "Elven Wardens’s". */
 function possessive(name: string): string {
-  return name.endsWith('s') ? `${name}\u2019` : `${name}\u2019s`;
+  return name.endsWith('s') ? `${name}’` : `${name}’s`;
 }
 
 function factionColor(id: string): string {
@@ -59,6 +83,8 @@ function Battle({ s, d, onSettings, onMenu }: BattleProps) {
   const fxRef = useRef<HTMLDivElement>(null);
   const hitRef = useRef<HTMLDivElement>(null);
   const heroRef = useRef<HTMLDivElement>(null);
+  /** Where the player last touched, so tap floats land under the finger. */
+  const tapPoint = useRef<{ x: number; y: number } | null>(null);
 
   const faction = factionForStage(s.stage);
   const enemy = s.enemy;
@@ -84,55 +110,76 @@ function Battle({ s, d, onSettings, onMenu }: BattleProps) {
     preloadBackdrops(faction.id, nextFaction.id);
   }, [faction.id, nextFaction.id]);
 
-  // --- death dissolve ---
-  // The store spawns the next enemy the instant the current one dies, so the
-  // corpse is captured here and drawn as a detached overlay in the fx layer.
-  const seen = useRef<{ kills: number; spriteId: string; boss: boolean; faction: string } | null>(null);
+  // --- event drain ---
+  // The engine records what happened in `s.events`; the view turns each entry into
+  // one effect and clears the queue. Nothing here infers anything from counters, so
+  // pet hits, auto-taps and off-screen kills all get their own presentation.
   useEffect(() => {
-    const cur = {
-      kills: s.stats.kills,
-      spriteId: enemySpriteId(s.enemy),
-      boss: s.enemy.isBoss,
-      faction: s.enemy.factionId,
-    };
-    const prev = seen.current;
-    seen.current = cur;
-    if (!prev || cur.kills <= prev.kills) return;
+    if (s.events.length === 0) return;
     const host = fxRef.current;
-    const node = hitRef.current;
-    if (!host || !node) return;
-    const hr = host.getBoundingClientRect();
-    // Measure the sprite itself, not its full-height flex wrapper.
-    const nr = (node.firstElementChild ?? node).getBoundingClientRect();
-    deathBurst(host, {
-      src: resolveArt(artUrl('enemies', prev.spriteId), spriteUrl('enemies', prev.spriteId)),
-      x: nr.left - hr.left + nr.width / 2,
-      y: nr.top - hr.top + nr.height / 2,
-      size: Math.round(Math.max(48, Math.min(280, nr.height || ENEMY_SIZE))),
-      color: factionColor(prev.faction),
-      boss: prev.boss,
-    });
+    const arena = arenaRef.current;
+    const w = arena?.clientWidth ?? 0;
+    const h = arena?.clientHeight ?? 0;
+    // Geometry of the enemy's box, derived from the stage constants rather than
+    // measured, so a corpse burst is placed correctly even though the store has
+    // already swapped in the next (differently sized) enemy.
+    const boxOf = (boss: boolean) => {
+      const size = h * (boss ? BOSS_H : ENEMY_H);
+      return { x: w * ENEMY_X, cy: h * GROUND_Y - size * 0.55, size };
+    };
+
+    let floats = 0;
+    let lunged = false;
+    for (const ev of s.events) {
+      if (ev.t === 'hit') {
+        hitReact(hitRef.current);
+        if (!lunged && (ev.source === 'tap' || ev.source === 'auto')) {
+          lunged = true;
+          lunge(heroRef.current, 38, -24);
+        }
+        if (ev.crit && ev.source === 'tap') shake(battleRef.current);
+        if (floats >= MAX_FLOATS_PER_FRAME) continue;
+        floats++;
+        const box = boxOf(enemy.isBoss);
+        const from = ev.source === 'tap' ? tapPoint.current : null;
+        const jitter = from ? 0 : (Math.random() * 2 - 1) * box.size * 0.28;
+        floatDamage(
+          host,
+          from ? from.x : box.x + jitter,
+          from ? from.y : box.cy + jitter * 0.4,
+          fmt(ev.dmg),
+          ev.crit,
+          ev.source === 'idle' || ev.source === 'rot' ? 'auto' : ev.source,
+        );
+        if (ev.source === 'tap') tapPoint.current = null;
+      } else if (ev.t === 'kill') {
+        const box = boxOf(ev.isBoss);
+        const spriteId = enemySpriteId({ name: ev.name, factionId: ev.factionId, isBoss: ev.isBoss } as Enemy);
+        deathBurst(host, {
+          src: resolveArt(artUrl('enemies', spriteId), spriteUrl('enemies', spriteId)),
+          x: box.x,
+          y: box.cy,
+          size: Math.round(Math.max(48, Math.min(300, box.size))),
+          color: factionColor(ev.factionId),
+          boss: ev.isBoss,
+        });
+      } else if (ev.t === 'bossTimeout') {
+        announce(host, `${ev.name} escaped`);
+      }
+    }
+    mutate(st => { st.events = []; });
   });
 
-  const isBossNow = enemy.isBoss;
-  const bossMult = d.bossMult;
   const onTap = useCallback((ev: React.PointerEvent<HTMLDivElement>) => {
-    let result = { dmg: 0, crit: false };
-    mutate(st => { result = tap(st, derive(st)); });
-    const host = fxRef.current;
     const rect = arenaRef.current?.getBoundingClientRect();
-    if (!rect) return;
-    const x = ev.clientX - rect.left;
-    const y = ev.clientY - rect.top;
-    ripple(host, x, y);
-    if (result.dmg <= 0) return;
-    // engine.tap() returns pre-bossMult damage; dealDamage applies the boss
-    // multiplier internally, so show what the enemy actually took.
-    floatDamage(host, x, y, fmt(result.dmg * (isBossNow ? bossMult : 1)), result.crit);
-    hitReact(hitRef.current);
-    lunge(heroRef.current, 38, -24);
-    if (result.crit) shake(battleRef.current);
-  }, [isBossNow, bossMult]);
+    if (rect) {
+      const point = { x: ev.clientX - rect.left, y: ev.clientY - rect.top };
+      tapPoint.current = point;
+      ripple(fxRef.current, point.x, point.y);
+    }
+    // Every visible consequence of the hit is played from the event queue above.
+    mutate(st => { tap(st, derive(st)); });
+  }, []);
 
   const fightBoss = useCallback((ev: React.MouseEvent) => {
     ev.stopPropagation();
@@ -151,6 +198,11 @@ function Battle({ s, d, onSettings, onMenu }: BattleProps) {
   const hpPct = Math.max(0, Math.min(1, enemy.maxHp > 0 ? enemy.hp / enemy.maxHp : 0)) * 100;
   const timerPct = enemy.timer !== undefined ? Math.max(0, Math.min(1, enemy.timer / d.bossTime)) * 100 : 0;
   const showFightBoss = isBossStage(s.stage) && !s.fightingBoss;
+
+  // s.lastTick is the store's own wall clock, stamped on every 100 ms tick — the
+  // same clock the engine compares boosts against, and stable within a render.
+  const goldLeft = s.boosts.goldUntil - s.lastTick;
+  const dmgLeft = s.boosts.damageUntil - s.lastTick;
 
   return (
     <section className="battle" ref={battleRef} style={{ '--faction': faction.color } as React.CSSProperties}>
@@ -174,51 +226,64 @@ function Battle({ s, d, onSettings, onMenu }: BattleProps) {
           <span className="res souls" title="Souls">
             <SoulIcon />{fmt(s.souls)}
           </span>
+          <span className="res soulfire" title="Soulfire">
+            <SoulfireIcon />{fmt(s.soulfire)}
+          </span>
         </div>
       </header>
 
-      <div className="arena" ref={arenaRef} onPointerDown={onTap}>
+      <div className="arena" ref={arenaRef} onPointerDown={onTap} style={STAGE_VARS}>
         <div className="zone-bg" aria-hidden="true">
           {zone.prev && <div className="zone-layer" key={`p-${zone.prev}`} style={prevLayer} />}
           <div className="zone-layer zone-layer-in" key={`c-${zone.cur}`} style={curLayer} />
           <div className="zone-vignette" />
         </div>
 
-        <div className="arena-body">
-          <div className="enemy-name-row">
-            {enemy.isBoss && <span className="boss-badge">BOSS</span>}
-            <span className="enemy-name">{enemy.name}</span>
-          </div>
-
-          <div className="enemy-sprite-wrap">
-            <div className={enemy.isBoss ? 'enemy-scale boss' : 'enemy-scale'}>
-              {enemy.isBoss && <span className="boss-aura" aria-hidden="true" />}
-              <div className="enemy-bob">
-                <div className="enemy-hit" ref={hitRef}>
-                  <Sprite
-                    kind="enemies"
-                    id={enemySpriteId(enemy)}
-                    size={ENEMY_SIZE}
-                    className="enemy-sprite"
-                    alt={enemy.name}
-                  />
-                </div>
+        {/* --- the stage: two fighters on one ground line --- */}
+        <div className="stage" aria-hidden="true">
+          <span className={enemy.isBoss ? 'unit-shadow enemy-shadow boss' : 'unit-shadow enemy-shadow'} />
+          <div className={enemy.isBoss ? 'unit enemy-anchor boss' : 'unit enemy-anchor'}>
+            {enemy.isBoss && <span className="boss-aura" />}
+            <div className="enemy-bob">
+              <div className="enemy-hit" ref={hitRef}>
+                <Sprite kind="enemies" id={enemySpriteId(enemy)} size={220} className="enemy-sprite" alt="" />
               </div>
             </div>
           </div>
 
+          {s.classId && (
+            <>
+              <span className="unit-shadow hero-shadow" />
+              <div className="unit hero-anchor">
+                <div className="hero-lunge" ref={heroRef}>
+                  <Sprite kind="classes" id={classSpriteId(s.classId, d.tier)} size={120} className="hero-fighter" alt="" />
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+
+        {/* --- top band: who you are fighting --- */}
+        <div className="band band-top">
+          <div className="enemy-name-row">
+            {enemy.isBoss && <span className="boss-badge">BOSS</span>}
+            <span className="enemy-name">{enemy.name}</span>
+          </div>
+        </div>
+
+        {/* --- bottom band: how the fight is going --- */}
+        <div className="band band-bottom">
           <div className="bars">
             <div className="hpbar">
               <div className="hpbar-fill" style={{ width: `${hpPct}%` }} />
               <span className="hpbar-text">{fmt(Math.max(0, enemy.hp))} / {fmt(enemy.maxHp)}</span>
             </div>
-            {enemy.timer !== undefined && (
+            {enemy.timer !== undefined ? (
               <div className="timerbar">
                 <div className="timerbar-fill" style={{ width: `${timerPct}%` }} />
                 <span className="timerbar-text">{enemy.timer.toFixed(1)}s</span>
               </div>
-            )}
-            {!enemy.isBoss && (
+            ) : (
               <div className="kill-pips" aria-label={`${s.killsThisStage} of ${KILLS_PER_STAGE} kills`}>
                 {Array.from({ length: KILLS_PER_STAGE }, (_, i) => (
                   <span key={i} className={i < s.killsThisStage ? 'pip pip-on' : 'pip'} />
@@ -227,12 +292,6 @@ function Battle({ s, d, onSettings, onMenu }: BattleProps) {
             )}
           </div>
         </div>
-
-        {s.classId && (
-          <div className="hero-slot" ref={heroRef} aria-hidden="true">
-            <Sprite kind="classes" id={classSpriteId(s.classId, d.tier)} size={74} className="hero-fighter" alt="" />
-          </div>
-        )}
 
         {drop && (
           <div
@@ -269,6 +328,8 @@ function Battle({ s, d, onSettings, onMenu }: BattleProps) {
       <div className="chips">
         <span className="chip"><b>Tap</b> {fmt(d.tapDamage)}</span>
         <span className="chip"><b>DPS</b> {fmt(d.idleDps)}</span>
+        {goldLeft > 0 && <span className="chip boost gold"><b>2× Gold</b> {fmtTime(goldLeft / 1000)}</span>}
+        {dmgLeft > 0 && <span className="chip boost dmg"><b>2× Dmg</b> {fmtTime(dmgLeft / 1000)}</span>}
         {d.comboMax > 0 && <span className="chip"><b>Combo</b> {s.comboStacks}/{d.comboMax}</span>}
         {d.killGrowth > 0 && <span className="chip"><b>Stacks</b> {s.killStacks}</span>}
       </div>

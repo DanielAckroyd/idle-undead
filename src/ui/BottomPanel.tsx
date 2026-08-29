@@ -1,14 +1,16 @@
 import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import type { GameState } from '../game/types';
 import type { Derived } from '../game/stats';
+import { dayIndex } from '../game/premium';
 import HeroTab from './tabs/HeroTab';
 import SkillsTab from './tabs/SkillsTab';
 import ArmyTab from './tabs/ArmyTab';
 import GearTab from './tabs/GearTab';
 import PetsTab from './tabs/PetsTab';
+import ShopTab from './tabs/ShopTab';
 import RebirthTab from './tabs/RebirthTab';
 
-const TABS = ['Hero', 'Skills', 'Army', 'Gear', 'Pets', 'Rebirth'] as const;
+const TABS = ['Hero', 'Skills', 'Army', 'Gear', 'Pets', 'Shop', 'Rebirth'] as const;
 type Tab = (typeof TABS)[number];
 
 type Snap = 'peek' | 'half' | 'full';
@@ -138,6 +140,7 @@ function BottomPanel({ s, d }: { s: GameState; d: Derived }) {
             {t}
             {t === 'Skills' && d.skillPointsAvail > 0 && <span className="tab-dot" />}
             {t === 'Gear' && s.lastDrop && <span className="tab-dot drop" />}
+            {t === 'Shop' && s.claimedDaily !== dayIndex(s.lastTick) && <span className="tab-dot shop" />}
           </button>
         ))}
       </nav>
@@ -149,6 +152,7 @@ function BottomPanel({ s, d }: { s: GameState; d: Derived }) {
           {tab === 'Army' && <ArmyTab s={s} d={d} />}
           {tab === 'Gear' && <GearTab s={s} d={d} />}
           {tab === 'Pets' && <PetsTab s={s} d={d} />}
+          {tab === 'Shop' && <ShopTab s={s} d={d} />}
           {tab === 'Rebirth' && <RebirthTab s={s} />}
         </div>
       )}
