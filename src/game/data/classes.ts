@@ -5,7 +5,7 @@ export const CLASSES: Record<ClassId, ClassDef> = {
     id: 'skeleton', essence: 'bone',
     tierNames: ['Skeleton', 'Bone Knight', 'Lich'],
     blurb: 'Hardy bones and a growing horde. Crits, army and a phylactery that cheats rebirth.',
-    baseTap: 6, tierThreshold: [5, 12],
+    baseTap: 6, tierThreshold: [6, 12],
     innate: { armyMult: 0.15 },
     tree: [
       { id: 'sk_marrow', name: 'Marrow Strike', desc: '+20% tap damage per rank', tier: 1, maxRank: 5, perRank: { tapMult: 0.2 } },
@@ -26,7 +26,7 @@ export const CLASSES: Record<ClassId, ClassDef> = {
     id: 'ghost', essence: 'spirit',
     tierNames: ['Ghost', 'Wraith', 'Banshee Queen'],
     blurb: 'Drift through the world. Strongest while you are away; taps phase into combos.',
-    baseTap: 4, tierThreshold: [5, 12],
+    baseTap: 4, tierThreshold: [6, 12],
     innate: { idleMult: 0.25, offlineHours: 2 },
     tree: [
       { id: 'gh_haunt', name: 'Haunting', desc: '+30% idle damage per rank', tier: 1, maxRank: 5, perRank: { idleMult: 0.3 } },
@@ -47,7 +47,7 @@ export const CLASSES: Record<ClassId, ClassDef> = {
     id: 'vampire', essence: 'blood',
     tierNames: ['Vampire', 'Vampire Lord', 'Nosferatu'],
     blurb: 'Fast, greedy, deadly. Every tap drinks gold; frenzy rewards rapid tapping.',
-    baseTap: 7, tierThreshold: [5, 12],
+    baseTap: 7, tierThreshold: [6, 12],
     innate: { goldMult: 0.2 },
     tree: [
       { id: 'va_fang', name: 'Fang Strike', desc: '+25% tap damage per rank', tier: 1, maxRank: 5, perRank: { tapMult: 0.25 } },
@@ -68,7 +68,7 @@ export const CLASSES: Record<ClassId, ClassDef> = {
     id: 'ghoul', essence: 'flesh',
     tierNames: ['Ghoul', 'Ghast', 'Abomination'],
     blurb: 'Eat, grow, rot. Every kill makes you stronger this stage; enemies decay around you.',
-    baseTap: 8, tierThreshold: [5, 12],
+    baseTap: 8, tierThreshold: [6, 12],
     innate: { killGrowth: 0.05 },
     tree: [
       { id: 'go_devour', name: 'Devour', desc: '+5% damage per kill this stage, per rank', tier: 1, maxRank: 5, perRank: { killGrowth: 0.05 } },

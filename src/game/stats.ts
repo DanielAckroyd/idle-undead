@@ -8,7 +8,7 @@ import { BOSS_TIME } from './data/enemies';
 
 export const BASE_OFFLINE_HOURS = 8;
 export const HERO_COST_BASE = 10;
-export const HERO_COST_GROWTH = 1.07;
+export const HERO_COST_GROWTH = 1.075;
 
 function add(into: Effects, from: Effects, scale = 1) {
   for (const k in from) {
@@ -75,13 +75,13 @@ export interface Derived {
 export function heroTapBase(classId: ClassId | null, heroLevel: number): number {
   const base = classId ? CLASSES[classId].baseTap : 5;
   // linear early, then gently exponential to keep pace with 1.18^stage enemies
-  return base * (1 + heroLevel * 1.5) * Math.pow(1.04, heroLevel);
+  return base * (1 + heroLevel * 0.6) * Math.pow(1.032, heroLevel);
 }
 
 export function unitDps(id: string, level: number): number {
   const u = UNITS.find(u => u.id === id);
   if (!u || level <= 0) return 0;
-  return u.baseDps * level * unitMilestoneMult(level) * Math.pow(1.03, level);
+  return u.baseDps * level * unitMilestoneMult(level) * Math.pow(1.012, level);
 }
 
 export function classTier(s: GameState): 1 | 2 | 3 {
@@ -94,7 +94,7 @@ export function classTier(s: GameState): 1 | 2 | 3 {
 }
 
 export function skillPointsTotal(s: GameState): number {
-  return Math.floor(s.heroLevel / 10) + Math.floor(s.maxStage / 10) + (s.bankedSkillPoints ?? 0);
+  return Math.floor(s.heroLevel / 20) + Math.floor(s.maxStage / 20) + (s.bankedSkillPoints ?? 0);
 }
 
 export function derive(s: GameState): Derived {

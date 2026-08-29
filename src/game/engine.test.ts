@@ -80,6 +80,8 @@ describe('skills & evolution', () => {
     expect(canLearn(s, 'sk_knight').ok).toBe(false);
     for (let i = 0; i < 5; i++) expect(learnSkill(s, 'sk_marrow')).toBe(true);
     expect(learnSkill(s, 'sk_marrow')).toBe(false); // maxed
+    expect(canLearn(s, 'sk_knight').ok).toBe(false); // needs 6 points in tier
+    expect(learnSkill(s, 'sk_brittle')).toBe(true);
     expect(canLearn(s, 'sk_knight').ok).toBe(true);
     learnSkill(s, 'sk_knight');
     expect(derive(s).tier).toBe(2);
@@ -89,6 +91,10 @@ describe('skills & evolution', () => {
   });
   it('every class can reach tier 3 within its tree', () => {
     for (const c of Object.values(CLASSES)) {
+      for (const tier of [1, 2] as const) {
+        const ranks = c.tree.filter(n => n.tier === tier && !n.capstone).reduce((a, n) => a + n.maxRank, 0);
+        expect(ranks, `${c.id} tier ${tier} has enough ranks`).toBeGreaterThanOrEqual(c.tierThreshold[tier - 1]);
+      }
       const s = fresh(c.id);
       s.heroLevel = 1000;
       const order = c.tree.filter(n => !n.capstone && n.tier < 3).concat(c.tree.filter(n => n.capstone));

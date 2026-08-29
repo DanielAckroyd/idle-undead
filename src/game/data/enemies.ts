@@ -25,11 +25,11 @@ export function isBossStage(stage: number): boolean {
 }
 
 export function enemyMaxHp(stage: number, boss: boolean): number {
-  const base = 10 * Math.pow(1.18, stage - 1) * (1 + stage * 0.05);
+  const base = 10 * Math.pow(1.22, stage - 1) * (1 + stage * 0.05);
   return Math.floor(base * (boss ? 6 : 1));
 }
 
 export function enemyGold(stage: number, boss: boolean): number {
   const hp = enemyMaxHp(stage, false);
-  return Math.max(1, Math.floor(Math.pow(hp, 0.72) * 1.4 * (boss ? 8 : 1)));
+  return Math.max(1, Math.floor(Math.pow(hp, 0.68) * 1.6 * (boss ? 8 : 1)));
 }
