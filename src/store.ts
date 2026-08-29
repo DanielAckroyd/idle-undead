@@ -42,15 +42,18 @@ export function startLoop() {
     const now = performance.now();
     const dt = Math.min(1, (now - last) / 1000);
     last = now;
-    mutate(s => { tick(s, dt); s.lastTick = Date.now(); });
-    saveAcc += dt;
-    if (saveAcc > 5) { saveAcc = 0; writeSave(state); }
+    // while hidden the sim pauses; visibilitychange applies the gap as offline time
+    if (!document.hidden) {
+      mutate(s => { tick(s, dt); s.lastTick = Date.now(); });
+      saveAcc += dt;
+      if (saveAcc > 5) { saveAcc = 0; writeSave(state); }
+    }
     setTimeout(step, 100);
   };
   step();
   document.addEventListener('visibilitychange', () => {
-    if (document.hidden) writeSave(state);
-    else mutate(s => applyOffline(s, Date.now()));
+    if (document.hidden) { writeSave(state); }
+    else { last = performance.now(); mutate(s => applyOffline(s, Date.now())); }
   });
   window.addEventListener('beforeunload', () => writeSave(state));
 }

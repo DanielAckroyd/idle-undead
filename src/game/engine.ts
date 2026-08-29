@@ -10,6 +10,10 @@ import { geomCost, maxAffordable, rng } from './numbers';
 
 export const SAVE_VERSION = 1;
 export const COMBO_DECAY_SECONDS = 1.5;
+/** Hard cap: enemy HP overflows Number past ~stage 3500. */
+export const STAGE_CAP = 3000;
+export const REBIRTH_MIN_STAGE = 20;
+export const REBIRTH_MIN_PROGRESS = 10;
 
 export function makeEnemy(stage: number, fightingBoss: boolean, seed: number, bossTime: number): Enemy {
   const f = factionForStage(stage);
@@ -24,7 +28,7 @@ export function newGame(seed = Date.now()): GameState {
   const s: GameState = {
     version: SAVE_VERSION, seed,
     classId: null, fusionId: null,
-    stage: 1, maxStage: 1, killsThisStage: 0,
+    stage: 1, maxStage: 1, runStartStage: 1, killsThisStage: 0,
     enemy: { name: '', factionId: 'holy', hp: 1, maxHp: 1, isBoss: false },
     fightingBoss: true,
     gold: 0, souls: 0, heroLevel: 0, skillPointsSpent: 0, bankedSkillPoints: 0,
@@ -87,7 +91,7 @@ function onKill(s: GameState, d: Derived) {
 }
 
 function advanceStage(s: GameState, by: number) {
-  s.stage += by;
+  s.stage = Math.min(STAGE_CAP, s.stage + by);
   s.killsThisStage = 0;
   s.killStacks = 0;
   s.fightingBoss = true;
@@ -119,16 +123,6 @@ export function tick(s: GameState, dt: number) {
   if (!s.classId || dt <= 0) return;
   let d = derive(s);
   s.stats.playSeconds += dt;
-
-  // boss timer
-  if (s.enemy.isBoss && s.enemy.timer !== undefined) {
-    s.enemy.timer -= dt;
-    if (s.enemy.timer <= 0) {
-      s.fightingBoss = false;
-      s.killsThisStage = 0;
-      s.enemy = makeEnemy(s.stage, false, s.seed + s.stats.kills, d.bossTime);
-    }
-  }
 
   // combo decay
   if (s.comboStacks > 0) {
@@ -166,6 +160,16 @@ export function tick(s: GameState, dt: number) {
         const dmg = d.tapDamage * p.dmgMult * lvl * (1 + (d.effects.petMult ?? 0)) * (1 + (d.effects.idleMult ?? 0));
         dealDamage(s, d, dmg, 'pet');
       }
+    }
+  }
+
+  // boss timer — checked after this slice's damage so a lethal tick still counts
+  if (s.enemy.isBoss && s.enemy.timer !== undefined) {
+    s.enemy.timer -= dt;
+    if (s.enemy.timer <= 0) {
+      s.fightingBoss = false;
+      s.killsThisStage = 0;
+      s.enemy = makeEnemy(s.stage, false, s.seed + s.stats.kills, d.bossTime);
     }
   }
 }
@@ -233,7 +237,11 @@ export function buyPet(s: GameState, id: string): boolean {
   return true;
 }
 export function setActivePet(s: GameState, id: string) {
-  if ((s.pets[id] ?? 0) > 0) { s.activePet = id; s.petCooldown = 0; }
+  if ((s.pets[id] ?? 0) > 0 && s.activePet !== id) {
+    const p = PETS.find(p => p.id === id)!;
+    s.activePet = id;
+    s.petCooldown = p.interval / (1 + (derive(s).effects.petAttackSpeed ?? 0));
+  }
 }
 
 // --- skills ---
@@ -274,7 +282,7 @@ export function learnSkill(s: GameState, nodeId: string): boolean {
 // --- rebirth ---
 
 export function soulsOnRebirth(s: GameState): number {
-  if (s.maxStage < 20) return 0;
+  if (s.maxStage < REBIRTH_MIN_STAGE || s.maxStage < s.runStartStage + REBIRTH_MIN_PROGRESS) return 0;
   const d = derive(s);
   return Math.floor(Math.pow(s.maxStage / 10, 1.6) * (1 + (d.effects.soulsMult ?? 0)));
 }
@@ -302,7 +310,7 @@ export function rebirth(s: GameState, fusion: ClassId | null = null): boolean {
   s.bankedSkillPoints = keepSp;
   s.army = {}; s.gear = {}; s.pets = {}; s.activePet = null;
   s.comboStacks = 0; s.comboTimer = 0; s.killStacks = 0; s.petCooldown = 0;
-  s.stage = startStage; s.maxStage = startStage; s.killsThisStage = 0; s.fightingBoss = true;
+  s.stage = startStage; s.maxStage = startStage; s.runStartStage = startStage; s.killsThisStage = 0; s.fightingBoss = true;
   s.fusionId = fusionAllowed ? fusion : null;
   spawn(s, derive(s));
   return true;
@@ -331,6 +339,8 @@ export function applyOffline(s: GameState, nowMs: number) {
   const elapsed = (nowMs - s.lastTick) / 1000;
   s.lastTick = nowMs;
   if (!s.classId || elapsed < 30) return;
+  // transient buffs never survive a long absence
+  s.comboStacks = 0; s.comboTimer = 0;
   const d = derive(s);
   const capped = Math.min(elapsed, d.offlineHours * 3600);
   if (d.idleDps <= 0) return;

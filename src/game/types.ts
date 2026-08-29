@@ -137,6 +137,8 @@ export interface GameState {
   fusionId: ClassId | null;
   stage: number;
   maxStage: number;
+  /** stage this run started at (relics can raise it); souls require progress past it */
+  runStartStage: number;
   killsThisStage: number;
   enemy: Enemy;
   /** boss fight active (else we farm the stage with no timer) */

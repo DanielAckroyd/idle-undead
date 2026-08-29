@@ -22,7 +22,7 @@ Each class has a skill tree of 3 tiers. Spending enough points in a tier unlocks
 the next tier and *evolves* the character (new name, sprite, and a capstone
 passive that changes play).
 
-Skill points: 1 per 10 hero levels + 1 per boss stage cleared (10, 20, …).
+Skill points: 1 per 20 hero levels + 1 per 20 stages reached.
 Reset on rebirth (hero levels reset), but Relics can refund/bank points.
 
 ## Idle damage sources
@@ -40,7 +40,8 @@ Dwarven Legion, Orc Warbands, Human Kingdom, Fae Court, Dragonkin, Demon Cult.
 Enemy HP: `10 * 1.18^stage * (boss ? 6 : 1)`. Gold: `~HP^0.7 * goldMult`.
 
 ## Rebirth
-Souls gained = `floor((maxStage / 10)^1.6)` (plus class/relic multipliers).
+Souls gained = `floor((maxStage / 10)^1.6)` (plus class/relic multipliers). Requires
+maxStage ≥ 20 and at least 10 stages of progress past the run's starting stage.
 Relics (permanent, cost Souls): global damage, gold, offline time, starting
 stage, keep skill points, unlock class fusion.
 **Fusion** (unlocked by relic "Grave Pact" after 2 rebirths): choose a secondary

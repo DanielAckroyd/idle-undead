@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { newGame, chooseClass, tap, tick, buyUnit, learnSkill, canLearn, rebirth, soulsOnRebirth, buyRelic, applyOffline, tierUnlocked } from './engine';
+import { newGame, chooseClass, tap, tick, buyUnit, buyPet, setActivePet, learnSkill, canLearn, rebirth, soulsOnRebirth, buyRelic, applyOffline, tierUnlocked, STAGE_CAP } from './engine';
+import { serialize, deserialize } from './save';
 import { derive } from './stats';
 import { fmt, geomCost, maxAffordable } from './numbers';
 import { CLASSES } from './data/classes';
@@ -156,5 +157,51 @@ describe('balance sanity', () => {
   it('enemy hp grows but stays finite to stage 500', () => {
     expect(enemyMaxHp(500, true)).toBeLessThan(Infinity);
     expect(enemyMaxHp(50, false)).toBeGreaterThan(enemyMaxHp(49, false));
+  });
+});
+
+describe('review regressions', () => {
+  it('start-stage relic cannot be farmed for souls', () => {
+    const s = fresh('skeleton');
+    s.maxStage = 40; s.souls = 1000;
+    for (let i = 0; i < 4; i++) buyRelic(s, 'r_map');
+    rebirth(s);
+    expect(s.stage).toBe(21);
+    expect(soulsOnRebirth(s)).toBe(0);
+    s.maxStage = 31;
+    expect(soulsOnRebirth(s)).toBeGreaterThan(0);
+  });
+  it('lethal damage in the same tick as boss expiry still kills the boss', () => {
+    const s = fresh();
+    s.gold = 1e9; buyUnit(s, 'zombies', 50); s.stage = 10; s.maxStage = 10;
+    s.enemy = { name: 'b', factionId: 'holy', hp: 1, maxHp: 1, isBoss: true, timer: 0.5 };
+    tick(s, 1);
+    expect(s.stage).toBe(11);
+  });
+  it('switching pets does not grant a free attack', () => {
+    const s = fresh();
+    s.pets = { rat: 1, crow: 1 }; s.activePet = 'rat'; s.petCooldown = 2;
+    setActivePet(s, 'crow');
+    expect(s.petCooldown).toBeGreaterThan(0);
+  });
+  it('offline ignores combo stacks', () => {
+    const s = fresh('ghost');
+    s.gold = 1e9; buyUnit(s, 'zombies', 10); buyPet(s, 'rat'); s.gold = 0;
+    s.skills = { gh_phase: 5 }; s.comboStacks = 10;
+    s.lastTick = Date.now() - 3600 * 1000;
+    applyOffline(s, Date.now());
+    expect(s.comboStacks).toBe(0);
+  });
+  it('deserialize repairs corrupt saves', () => {
+    const s = fresh();
+    const raw = JSON.parse(serialize(s));
+    raw.classId = 'dragon'; raw.stats = { taps: 'x' }; raw.gold = null; raw.army = { zombies: 'many', archers: 3 }; raw.stage = 1e9;
+    const out = deserialize(JSON.stringify(raw))!;
+    expect(out.classId).toBeNull();
+    expect(out.stats.taps).toBe(0); expect(out.stats.kills).toBe(0);
+    expect(out.gold).toBe(0);
+    expect(out.army).toEqual({ archers: 3 });
+    expect(out.stage).toBe(STAGE_CAP);
+    expect(deserialize('{nope')).toBeNull();
   });
 });
