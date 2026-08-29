@@ -132,13 +132,19 @@ export function floatDamage(
     {
       transform: `translate(calc(-50% + ${jitter * 0.3}px), calc(-50% - ${quiet ? 10 : 16}px)) scale(${pop})`,
       opacity: 1,
-      offset: 0.18,
+      offset: 0.14,
+    },
+    {
+      // hold fully readable for most of the flight, then fade on the tail
+      transform: `translate(calc(-50% + ${jitter * 0.8}px), calc(-50% + ${rise * 0.75}px)) scale(${crit ? 1.15 : 1})`,
+      opacity: 1,
+      offset: 0.62,
     },
     {
       transform: `translate(calc(-50% + ${jitter}px), calc(-50% + ${rise}px)) scale(${crit ? 1.05 : 0.9})`,
       opacity: 0,
     },
-  ], { duration: crit ? 900 : quiet ? 620 : 800, easing: 'cubic-bezier(.16,.9,.3,1)' });
+  ], { duration: crit ? 1250 : quiet ? 850 : 1100, easing: 'cubic-bezier(.16,.9,.3,1)' });
 }
 
 /** One-shot centred announcement (boss escaped, …). */
