@@ -4,8 +4,8 @@ Status legend: ☐ todo · ◐ in progress · ☑ done
 
 ## Phase 1 — "It's alive" (feel + art)  ◐
 - ☑ Codex `image_gen` pipeline: manifest → transparent PNG → resized assets
-- ◐ Real painted sprites: 12 class tiers, 48 enemies/bosses, 8 units, 5 pets (57/81 done; rest after Codex quota reset)
-- ◐ 8 zone backdrops (portrait), zone-transition toast
+- ☑ Real painted sprites: 12 class tiers, 48 enemies/bosses, 8 units, 5 pets (81/81)
+- ☑ 8 zone backdrops (portrait), zone-transition toast
 - ◐ Enemy life: idle bob, hit flinch + flash, death dissolve, boss aura + entrance banner
 - ◐ Tap juice: hero lunge, tap ripple, screen shake on crit, HP bar damage-lag ghost
 - ◐ Main menu: title, Continue / New Game, class select flow, settings, credits
