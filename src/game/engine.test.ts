@@ -3,7 +3,7 @@ import { newGame, chooseClass, tap, tick, buyUnit, buyPet, setActivePet, learnSk
 import { serialize, deserialize } from './save';
 import { rollItem, addItem, equip, salvage, reforge, activeSets, gearEffects } from './items';
 import { INVENTORY_CAP } from './data/items';
-import { claimDaily, applyAdBoost, buyShop, grantPurchase } from './premium';
+import { claimDaily, applyAdBoost, buyShop, grantPurchase, timeSkipGold } from './premium';
 import { AD_BOOSTS_PER_DAY } from './data/products';
 import { derive } from './stats';
 import { fmt, geomCost, maxAffordable } from './numbers';
@@ -255,9 +255,10 @@ describe('items', () => {
     addItem(s, rollItem(1, 10));
     rebirth(s);
     expect(s.inventory.length).toBe(1);
-    const raw = JSON.parse(serialize(s)); raw.version = 1; raw.gear = { rusted_blade: 3 };
+    const raw = JSON.parse(serialize(s)); raw.version = 1; raw.gear = { rusted_blade: 3, bone_plate: 2 }; raw.scrap = 1;
     const out = deserialize(JSON.stringify(raw))!;
     expect(out.version).toBe(2);
+    expect(out.scrap).toBe(11);
     expect((out as unknown as { gear?: unknown }).gear).toBeUndefined();
   });
 });
@@ -338,5 +339,32 @@ describe('premium fixes', () => {
     expect(s.enemy.isBoss).toBe(true);
     const t = fresh(); t.adsRemoved = true;
     expect(applyAdBoost(t, 'ad_boss', 5)).toBe(false);
+  });
+});
+
+describe('review round 2', () => {
+  it('daily and ad counters ignore clock rollback', () => {
+    const s = fresh();
+    const day = 86_400_000;
+    expect(claimDaily(s, 20 * day)).toBeGreaterThan(0);
+    expect(claimDaily(s, 19 * day)).toBe(0);
+    expect(claimDaily(s, 20 * day)).toBe(0);
+    for (let i = 0; i < AD_BOOSTS_PER_DAY; i++) applyAdBoost(s, 'ad_gold', 20 * day);
+    expect(applyAdBoost(s, 'ad_gold', 19 * day)).toBe(false);
+  });
+  it('item uids are unique regardless of seed', () => {
+    const s = fresh();
+    addItem(s, rollItem(5, 3)); addItem(s, rollItem(5, 3));
+    expect(new Set(s.inventory.map(i => i.uid)).size).toBe(2);
+    const out = deserialize(serialize(s))!;
+    addItem(out, rollItem(5, 3));
+    expect(new Set(out.inventory.map(i => i.uid)).size).toBe(3);
+  });
+  it('time skip ignores combo stacks', () => {
+    const s = fresh('ghost'); s.gold = 1e9; buyUnit(s, 'zombies', 10); buyPet(s, 'rat');
+    s.skills = { gh_phase: 5 };
+    const base = timeSkipGold(s, 4);
+    s.comboStacks = 10;
+    expect(timeSkipGold(s, 4)).toBeCloseTo(base);
   });
 });

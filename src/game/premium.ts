@@ -22,7 +22,7 @@ export function boostMults(s: GameState, now: number) {
 
 /** Gold from `hours` of idle play at the current stage (same formula as offline). */
 export function timeSkipGold(s: GameState, hours: number): number {
-  const d = derive(s);
+  const d = derive({ ...s, comboStacks: 0 }); // transient buffs don't project over hours
   if (d.idleDps <= 0) return 0;
   const kills = (d.idleDps * hours * 3600) / enemyMaxHp(s.stage, false);
   return kills * enemyGold(s.stage, false) * d.goldMult;
@@ -30,7 +30,8 @@ export function timeSkipGold(s: GameState, hours: number): number {
 
 export function claimDaily(s: GameState, now: number): number {
   const today = dayIndex(now);
-  if (s.claimedDaily === today) return 0;
+  // monotonic: a clock rolled backwards can never re-open an earlier day
+  if (today <= s.claimedDaily) return 0;
   const streak = s.claimedDaily === today - 1 ? (s.stats.dailyStreak ?? 0) + 1 : 0;
   s.stats.dailyStreak = streak;
   s.claimedDaily = today;
@@ -42,14 +43,14 @@ export function claimDaily(s: GameState, now: number): number {
 
 export function canUseAdBoost(s: GameState, now: number): boolean {
   if (s.adsRemoved) return true;
-  if (s.boosts.adBoostDay !== dayIndex(now)) return true;
+  if (dayIndex(now) > s.boosts.adBoostDay) return true;
   return s.boosts.adBoostsToday < AD_BOOSTS_PER_DAY;
 }
 
 /** Called after the ad completed (or immediately when ads are removed). */
 export function applyAdBoost(s: GameState, id: (typeof AD_BOOSTS)[number]['id'], now: number): boolean {
   if (!canUseAdBoost(s, now)) return false;
-  if (s.boosts.adBoostDay !== dayIndex(now)) { s.boosts.adBoostDay = dayIndex(now); s.boosts.adBoostsToday = 0; }
+  if (dayIndex(now) > s.boosts.adBoostDay) { s.boosts.adBoostDay = dayIndex(now); s.boosts.adBoostsToday = 0; }
   if (!s.adsRemoved) s.boosts.adBoostsToday++;
   switch (id) {
     case 'ad_gold': s.boosts.goldUntil = Math.max(s.boosts.goldUntil, now) + 4 * 3600_000; break;
@@ -101,7 +102,7 @@ export function buyShop(s: GameState, productId: string, now: number): { ok: boo
       s.stats.chestsOpened = (s.stats.chestsOpened ?? 0) + 1;
       const pity = s.stats.chestsOpened % 5 === 0;
       const rarity = pity ? 'legendary' : (['rare', 'rare', 'epic'] as const)[Math.floor(((now / 7) % 1) * 3)];
-      addItem(s, rollItem(now ^ s.stats.chestsOpened, s.stage, undefined, rarity));
+      addItem(s, rollItem(now * 31 + s.stats.chestsOpened * 7919, s.stage, undefined, rarity));
       break;
     }
   }

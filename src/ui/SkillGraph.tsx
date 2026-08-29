@@ -102,6 +102,7 @@ export default function SkillGraph({ s, c, tier, selected, onSelect }: Props) {
   const viewportRef = useRef<HTMLDivElement>(null);
   const [view, setView] = useState<View>({ x: 0, y: 0, z: 1 });
 
+  const origins = useRef(new Map<number, { x: number; y: number }>());
   const pointers = useRef(new Map<number, { x: number; y: number }>());
   const pinchDist = useRef(0);
   const dragged = useRef(false);
@@ -188,6 +189,7 @@ export default function SkillGraph({ s, c, tier, selected, onSelect }: Props) {
   // capturing the viewport up-front would swallow the node's click.
   const onPointerDown = useCallback((ev: React.PointerEvent<HTMLDivElement>) => {
     pointers.current.set(ev.pointerId, { x: ev.clientX, y: ev.clientY });
+    origins.current.set(ev.pointerId, { x: ev.clientX, y: ev.clientY });
     if (pointers.current.size === 1) dragged.current = false;
     if (pointers.current.size === 2) {
       const [a, b] = [...pointers.current.values()];
@@ -200,6 +202,7 @@ export default function SkillGraph({ s, c, tier, selected, onSelect }: Props) {
     if (!prev) return;
     const next = { x: ev.clientX, y: ev.clientY };
     pointers.current.set(ev.pointerId, next);
+    const origin = origins.current.get(ev.pointerId) ?? prev;
     const pts = [...pointers.current.values()];
 
     if (pts.length >= 2) {
@@ -223,7 +226,8 @@ export default function SkillGraph({ s, c, tier, selected, onSelect }: Props) {
 
     const dx = next.x - prev.x;
     const dy = next.y - prev.y;
-    if (!dragged.current && Math.abs(dx) + Math.abs(dy) > DRAG_SLOP) {
+    // slop is measured from pointer-down, not per event, so slow smooth drags still pan
+    if (!dragged.current && Math.abs(next.x - origin.x) + Math.abs(next.y - origin.y) > DRAG_SLOP) {
       dragged.current = true;
       // Only once a real drag begins: keeps a mouse pan alive outside the viewport.
       try { ev.currentTarget.setPointerCapture(ev.pointerId); } catch { /* already gone */ }
@@ -237,6 +241,7 @@ export default function SkillGraph({ s, c, tier, selected, onSelect }: Props) {
 
   const onPointerUp = useCallback((ev: React.PointerEvent<HTMLDivElement>) => {
     pointers.current.delete(ev.pointerId);
+    origins.current.delete(ev.pointerId);
     if (pointers.current.size < 2) pinchDist.current = 0;
   }, []);
 

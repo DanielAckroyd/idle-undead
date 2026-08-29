@@ -162,6 +162,7 @@ export interface GameState {
   inventory: Item[];
   equipped: Record<GearSlot, string | null>;
   scrap: number;
+  itemSeq: number;
   /** drop waiting for the UI to present (already in inventory) */
   lastDrop: string | null;
   /** transient FX events since the UI last drained them (not saved) */

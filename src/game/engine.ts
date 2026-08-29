@@ -35,7 +35,7 @@ export function newGame(seed = Date.now()): GameState {
     gold: 0, souls: 0, heroLevel: 0, skillPointsSpent: 0, bankedSkillPoints: 0,
     skills: {}, army: {}, pets: {}, activePet: null, relics: {},
     events: [],
-    inventory: [], equipped: { weapon: null, armor: null, crown: null, trinket: null, charm: null }, scrap: 0, lastDrop: null,
+    inventory: [], equipped: { weapon: null, armor: null, crown: null, trinket: null, charm: null }, scrap: 0, itemSeq: 1, lastDrop: null,
     rebirths: 0, totalSouls: 0, soulfire: 0, adsRemoved: false,
     boosts: { goldUntil: 0, damageUntil: 0, offlineDoubleNext: false, adBoostsToday: 0, adBoostDay: 0 },
     claimedDaily: -1, ownedSkins: [], inventoryBonus: 0,

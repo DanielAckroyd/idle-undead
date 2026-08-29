@@ -24,6 +24,7 @@ import {
   claimDaily,
   dayIndex,
   grantPurchase,
+  canRetryBoss,
   inventoryCap,
   timeSkipGold,
 } from '../../game/premium';
@@ -128,7 +129,7 @@ function Boosts({ s, onToast }: { s: GameState; onToast: (t: Toast) => void }) {
             ? s.boosts.goldUntil - now
             : (b.id === 'ad_damage' && s.boosts.damageUntil > now) ? s.boosts.damageUntil - now : 0;
           const queued = b.id === 'ad_offline' && s.boosts.offlineDoubleNext;
-          const dead = b.id === 'ad_boss' && !(s.enemy.isBoss && s.enemy.timer !== undefined);
+          const dead = b.id === 'ad_boss' && !(s.enemy.isBoss && s.enemy.timer !== undefined) && !canRetryBoss(s);
           const ok = canUse && !dead;
           return (
             <button
@@ -214,7 +215,7 @@ function Packs({ s, onToast }: { s: GameState; onToast: (t: Toast) => void }) {
     setBusy('restore');
     try {
       const ids = await monetization().restore();
-      mutate(st => { for (const id of ids) grantPurchase(st, id, Date.now()); });
+      mutate(st => { for (const id of ids) grantPurchase(st, id, Date.now(), true); });
       onToast({ id: 'restore', text: ids.length ? `Restored ${ids.length} purchase${ids.length === 1 ? '' : 's'}` : 'Nothing to restore' });
     } finally {
       setBusy(null);

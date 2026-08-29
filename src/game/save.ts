@@ -13,7 +13,13 @@ export function deserialize(json: string): GameState | null {
   try {
     const raw = JSON.parse(json) as Partial<GameState>;
     if (!raw || typeof raw !== 'object' || typeof raw.version !== 'number' || raw.version > SAVE_VERSION) return null;
-    if (raw.version < 2) { delete (raw as Record<string, unknown>).gear; raw.version = 2; }
+    if (raw.version < 2) {
+      // v1 bought gear with gold; convert every level into scrap so the investment survives
+      const gear = (raw as { gear?: Record<string, number> }).gear ?? {};
+      const levels = Object.values(gear).reduce((a, b) => a + (Number.isFinite(b) ? b : 0), 0);
+      (raw as { scrap?: number }).scrap = ((raw as { scrap?: number }).scrap ?? 0) + levels * 2;
+      delete (raw as Record<string, unknown>).gear; raw.version = 2;
+    }
     const base = newGame(typeof raw.seed === 'number' ? raw.seed : Date.now());
     const s: GameState = { ...base, ...raw, enemy: { ...base.enemy, ...(raw.enemy ?? {}) }, stats: { ...base.stats, ...(raw.stats ?? {}) } };
     // reject unknown ids, coerce non-finite numbers
@@ -28,7 +34,11 @@ export function deserialize(json: string): GameState | null {
     s.inventory = s.inventory.filter(i => i && typeof i.uid === 'string' && Array.isArray(i.affixes));
     if (typeof s.equipped !== 'object' || s.equipped === null) s.equipped = { ...base.equipped };
     for (const k of Object.keys(base.equipped) as (keyof typeof base.equipped)[]) if (s.equipped[k] && !s.inventory.some(i => i.uid === s.equipped[k])) s.equipped[k] = null;
-    const numKeys = ['stage', 'maxStage', 'runStartStage', 'killsThisStage', 'gold', 'souls', 'heroLevel', 'skillPointsSpent', 'bankedSkillPoints', 'rebirths', 'totalSouls', 'comboStacks', 'comboTimer', 'killStacks', 'petCooldown', 'lastTick', 'scrap', 'soulfire', 'inventoryBonus', 'claimedDaily'] as const;
+    const numKeys = ['stage', 'maxStage', 'runStartStage', 'killsThisStage', 'gold', 'souls', 'heroLevel', 'skillPointsSpent', 'bankedSkillPoints', 'rebirths', 'totalSouls', 'comboStacks', 'comboTimer', 'killStacks', 'petCooldown', 'lastTick', 'scrap', 'soulfire', 'inventoryBonus', 'claimedDaily', 'itemSeq'] as const;
+    // dedupe uids and keep the sequence ahead of every existing id
+    const seen = new Set<string>();
+    s.inventory = s.inventory.filter(i => !seen.has(i.uid) && seen.add(i.uid));
+    s.itemSeq = Math.max(s.itemSeq, s.inventory.length + 1, ...s.inventory.map(i => parseInt(i.uid.slice(1), 36) + 1 || 0));
     if (typeof s.boosts !== 'object' || s.boosts === null) s.boosts = { ...base.boosts };
     else s.boosts = { ...base.boosts, ...s.boosts };
     if (!Array.isArray(s.ownedSkins)) s.ownedSkins = [];

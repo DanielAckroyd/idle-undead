@@ -167,7 +167,9 @@ function Battle({ s, d, onSettings, onMenu }: BattleProps) {
         announce(host, `${ev.name} escaped`);
       }
     }
-    mutate(st => { st.events = []; });
+    // Events are presentation-only and never saved: drain in place rather than
+    // publishing a second global state update per frame.
+    s.events.length = 0;
   });
 
   const onTap = useCallback((ev: React.PointerEvent<HTMLDivElement>) => {

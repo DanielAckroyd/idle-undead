@@ -47,6 +47,8 @@ export function rollItem(seed: number, stage: number, forcedSlot?: GearSlot, for
 /** Add to inventory; if full, auto-salvage and return false. */
 export function addItem(s: GameState, item: Item): boolean {
   if (s.inventory.length >= INVENTORY_CAP + (s.inventoryBonus ?? 0)) { s.scrap += RARITY_INFO[item.rarity].scrap; return false; }
+  // identity is a persisted monotonic counter, independent of the RNG seed
+  item.uid = `i${(s.itemSeq++).toString(36)}`;
   s.inventory.push(item);
   s.lastDrop = item.uid;
   return true;
