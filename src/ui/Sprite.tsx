@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { spriteUrl, type SpriteKind } from './sprites';
 
 interface SpriteProps {
@@ -35,11 +35,10 @@ function Silhouette({ size, className }: { size: number; className?: string }) {
 /** Sprite image with a graceful fallback while assets are still being generated. */
 export default function Sprite({ kind, id, size = 64, alt = '', className }: SpriteProps) {
   const url = spriteUrl(kind, id);
-  const [broken, setBroken] = useState(false);
+  // Remember which url failed rather than a boolean, so a new url retries for free.
+  const [brokenUrl, setBrokenUrl] = useState<string | null>(null);
 
-  useEffect(() => { setBroken(false); }, [url]);
-
-  if (broken) return <Silhouette size={size} className={className} />;
+  if (brokenUrl === url) return <Silhouette size={size} className={className} />;
 
   return (
     <img
@@ -49,7 +48,7 @@ export default function Sprite({ kind, id, size = 64, alt = '', className }: Spr
       alt={alt}
       className={className}
       draggable={false}
-      onError={() => setBroken(true)}
+      onError={() => setBrokenUrl(url)}
     />
   );
 }

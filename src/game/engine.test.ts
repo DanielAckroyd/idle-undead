@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { newGame, chooseClass, tap, tick, buyHero, buyUnit, learnSkill, canLearn, rebirth, soulsOnRebirth, buyRelic, applyOffline, tierUnlocked } from './engine';
+import { newGame, chooseClass, tap, tick, buyUnit, learnSkill, canLearn, rebirth, soulsOnRebirth, buyRelic, applyOffline, tierUnlocked } from './engine';
 import { derive } from './stats';
 import { fmt, geomCost, maxAffordable } from './numbers';
 import { CLASSES } from './data/classes';
