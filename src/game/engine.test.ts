@@ -302,3 +302,21 @@ describe('premium', () => {
     expect(grantPurchase(s, 'starter', 5)).toBe(false);
   });
 });
+
+describe('events', () => {
+  it('tap returns applied damage and emits hit/kill events; auto taps are discrete', () => {
+    const s = fresh();
+    s.enemy = { name: 'b', factionId: 'holy', hp: 1e9, maxHp: 1e9, isBoss: true, timer: 30 };
+    s.skills = { sk_death: 5 }; // +200% boss dmg
+    const d = derive(s);
+    const r = tap(s, d, 1);
+    expect(r.dmg).toBeCloseTo(d.tapDamage * 3);
+    expect(s.events.at(-1)).toMatchObject({ t: 'hit', source: 'tap', crit: false });
+    s.events = [];
+    s.enemy.hp = 1; tap(s, d, 1);
+    expect(s.events.map(e => e.t)).toEqual(['hit', 'kill']);
+    const a = fresh(); a.skills = { sk_bonestorm: 3 }; a.enemy.hp = 1e12; a.enemy.maxHp = 1e12;
+    tick(a, 1);
+    expect(a.events.filter(e => e.t === 'hit' && e.source === 'auto').length).toBe(6);
+  });
+});

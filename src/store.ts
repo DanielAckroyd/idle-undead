@@ -17,7 +17,7 @@ export function subscribe(fn: () => void) { listeners.add(fn); return () => { li
 export function mutate(fn: (s: GameState) => void) {
   const next: GameState = { ...state, enemy: { ...state.enemy }, stats: { ...state.stats },
     skills: { ...state.skills }, army: { ...state.army }, pets: { ...state.pets }, relics: { ...state.relics },
-    inventory: state.inventory.map(i => ({ ...i, affixes: i.affixes.map(a => ({ ...a })) })), equipped: { ...state.equipped } };
+    events: state.events, inventory: state.inventory.map(i => ({ ...i, affixes: i.affixes.map(a => ({ ...a })) })), equipped: { ...state.equipped } };
   fn(next);
   state = next;
   for (const l of listeners) l();

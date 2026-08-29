@@ -1,4 +1,4 @@
-import type { ClassId, Enemy, GameState } from './types';
+import type { ClassId, Enemy, GameEvent, GameState } from './types';
 import { CLASSES } from './data/classes';
 import { UNITS } from './data/units';
 import { addItem, rollItem } from './items';
@@ -34,11 +34,12 @@ export function newGame(seed = Date.now()): GameState {
     fightingBoss: true,
     gold: 0, souls: 0, heroLevel: 0, skillPointsSpent: 0, bankedSkillPoints: 0,
     skills: {}, army: {}, pets: {}, activePet: null, relics: {},
+    events: [],
     inventory: [], equipped: { weapon: null, armor: null, crown: null, trinket: null, charm: null }, scrap: 0, lastDrop: null,
     rebirths: 0, totalSouls: 0, soulfire: 0, adsRemoved: false,
     boosts: { goldUntil: 0, damageUntil: 0, offlineDoubleNext: false, adBoostsToday: 0, adBoostDay: 0 },
     claimedDaily: -1, ownedSkins: [], inventoryBonus: 0,
-    comboStacks: 0, comboTimer: 0, killStacks: 0, petCooldown: 0,
+    comboStacks: 0, comboTimer: 0, killStacks: 0, petCooldown: 0, autoTapAcc: 0,
     lastTick: Date.now(),
     stats: { taps: 0, kills: 0, goldEarned: 0, damageDealt: 0, playSeconds: 0 },
     pendingOffline: null,
@@ -59,18 +60,23 @@ function spawn(s: GameState, d: Derived) {
 }
 
 /** Apply damage; handles kills, gold, stage advance. Returns actual damage dealt. */
-export function dealDamage(s: GameState, d: Derived, amount: number, source: 'tap' | 'idle' | 'pet' | 'rot'): number {
+const MAX_EVENTS = 64;
+export function pushEvent(s: GameState, e: GameEvent) { if (s.events.length < MAX_EVENTS) s.events.push(e); }
+
+export function dealDamage(s: GameState, d: Derived, amount: number, source: 'tap' | 'idle' | 'pet' | 'rot' | 'auto', crit = false): number {
   if (amount <= 0 || s.enemy.hp <= 0) return 0;
   const dmg = Math.min(s.enemy.hp, amount * (s.enemy.isBoss ? d.bossMult : 1) * (s.boosts.damageUntil > s.lastTick ? 2 : 1));
   s.enemy.hp -= dmg;
   s.stats.damageDealt += dmg;
-  if (source === 'tap' && d.effects.lifestealGold) gain(s, dmg * d.effects.lifestealGold * d.goldMult);
+  if (source !== 'idle' && source !== 'rot') pushEvent(s, { t: 'hit', source, dmg, crit });
+  if ((source === 'tap' || source === 'auto') && d.effects.lifestealGold) gain(s, dmg * d.effects.lifestealGold * d.goldMult);
   if (s.enemy.hp <= 0) onKill(s, d);
   return dmg;
 }
 
 function onKill(s: GameState, d: Derived) {
   const wasBoss = s.enemy.isBoss;
+  pushEvent(s, { t: 'kill', name: s.enemy.name, factionId: s.enemy.factionId, isBoss: wasBoss });
   const gold = enemyGold(s.stage, wasBoss) * d.goldMult * (wasBoss ? 1 + (d.effects.bossGoldMult ?? 0) : 1) * (s.boosts.goldUntil > s.lastTick ? 2 : 1);
   gain(s, gold);
   s.stats.kills++;
@@ -120,8 +126,7 @@ export function tap(s: GameState, d: Derived, roll: number = Math.random()): { d
     s.comboTimer = COMBO_DECAY_SECONDS;
   }
   const crit = roll < d.critChance;
-  const dmg = d.tapDamage * (crit ? d.critMult : 1);
-  dealDamage(s, d, dmg, 'tap');
+  const dmg = dealDamage(s, d, d.tapDamage * (crit ? d.critMult : 1), 'tap', crit);
   return { dmg, crit };
 }
 
@@ -140,11 +145,12 @@ export function tick(s: GameState, dt: number) {
   // auto taps
   if (d.autoTapRate > 0) {
     const r = rng(s.seed + Math.floor(s.stats.playSeconds * 1000));
-    const n = d.autoTapRate * dt;
-    // deal as a lump; crits averaged in
-    const avgTap = d.tapDamage * (1 + d.critChance * (d.critMult - 1));
-    dealDamage(s, d, avgTap * n, 'tap');
-    void r;
+    s.autoTapAcc += d.autoTapRate * dt;
+    while (s.autoTapAcc >= 1) {
+      s.autoTapAcc -= 1;
+      const crit = r() < d.critChance;
+      dealDamage(s, d, d.tapDamage * (crit ? d.critMult : 1), 'auto', crit);
+    }
   }
 
   // army idle dps
@@ -174,6 +180,7 @@ export function tick(s: GameState, dt: number) {
   if (s.enemy.isBoss && s.enemy.timer !== undefined) {
     s.enemy.timer -= dt;
     if (s.enemy.timer <= 0) {
+      pushEvent(s, { t: 'bossTimeout', name: s.enemy.name });
       s.fightingBoss = false;
       s.killsThisStage = 0;
       s.enemy = makeEnemy(s.stage, false, s.seed + s.stats.kills, d.bossTime);
@@ -302,7 +309,7 @@ export function rebirth(s: GameState, fusion: ClassId | null = null): boolean {
   s.skillPointsSpent = 0;
   s.bankedSkillPoints = keepSp;
   s.army = {}; s.pets = {}; s.activePet = null; // inventory, equipped and scrap persist
-  s.comboStacks = 0; s.comboTimer = 0; s.killStacks = 0; s.petCooldown = 0;
+  s.comboStacks = 0; s.comboTimer = 0; s.killStacks = 0; s.petCooldown = 0; s.autoTapAcc = 0;
   s.stage = startStage; s.maxStage = startStage; s.runStartStage = startStage; s.killsThisStage = 0; s.fightingBoss = true;
   s.fusionId = fusionAllowed ? fusion : null;
   spawn(s, derive(s));

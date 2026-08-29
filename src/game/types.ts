@@ -132,6 +132,11 @@ export interface Enemy {
   timer?: number;
 }
 
+export type GameEvent =
+  | { t: 'hit'; source: 'tap' | 'pet' | 'auto' | 'idle' | 'rot'; dmg: number; crit: boolean }
+  | { t: 'kill'; name: string; factionId: string; isBoss: boolean }
+  | { t: 'bossTimeout'; name: string };
+
 export interface GameState {
   version: number;
   seed: number;
@@ -158,6 +163,8 @@ export interface GameState {
   scrap: number;
   /** drop waiting for the UI to present (already in inventory) */
   lastDrop: string | null;
+  /** transient FX events since the UI last drained them (not saved) */
+  events: GameEvent[];
   pets: Record<string, number>;
   activePet: string | null;
   relics: Record<string, number>;
@@ -175,6 +182,7 @@ export interface GameState {
   comboTimer: number;
   killStacks: number;
   petCooldown: number;
+  autoTapAcc: number;
 
   lastTick: number;   // ms epoch
   stats: { taps: number; kills: number; goldEarned: number; damageDealt: number; playSeconds: number; dailyStreak?: number; starterBought?: number; chestsOpened?: number };

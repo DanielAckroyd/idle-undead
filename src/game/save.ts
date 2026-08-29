@@ -32,6 +32,7 @@ export function deserialize(json: string): GameState | null {
     if (typeof s.boosts !== 'object' || s.boosts === null) s.boosts = { ...base.boosts };
     else s.boosts = { ...base.boosts, ...s.boosts };
     if (!Array.isArray(s.ownedSkins)) s.ownedSkins = [];
+    s.events = [];
     s.adsRemoved = s.adsRemoved === true;
     for (const k of numKeys) if (!Number.isFinite(s[k])) (s as unknown as Record<string, number>)[k] = base[k];
     for (const k of Object.keys(base.stats) as (keyof GameState['stats'])[]) if (!Number.isFinite(s.stats[k])) s.stats[k] = 0;

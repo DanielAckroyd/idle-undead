@@ -51,6 +51,8 @@ export interface Derived {
   critChance: number;
   critMult: number;
   armyDps: number;
+  /** multiplier applied to raw unit dps (army × idle × all × kill stacks) */
+  armyMult: number;
   petDps: number;         // average dps of active pet
   idleDps: number;        // armyDps + petDps
   bossMult: number;
@@ -73,6 +75,11 @@ export function heroTapBase(classId: ClassId | null, heroLevel: number): number 
   const base = classId ? CLASSES[classId].baseTap : 5;
   // linear early, then gently exponential to keep pace with 1.18^stage enemies
   return base * (1 + heroLevel * 0.6) * Math.pow(1.035, heroLevel);
+}
+
+/** A unit's DPS after all multipliers, as it shows in the header. */
+export function effectiveUnitDps(d: Derived, id: string, level: number): number {
+  return unitDps(id, level) * d.armyMult;
 }
 
 export function unitDps(id: string, level: number): number {
@@ -104,7 +111,8 @@ export function derive(s: GameState): Derived {
 
   const tapDamage = heroTapBase(s.classId, s.heroLevel) * (1 + (e.tapMult ?? 0)) * all * killMult * comboMult;
   const armyRaw = UNITS.reduce((sum, u) => sum + unitDps(u.id, s.army[u.id] ?? 0), 0);
-  const armyDps = armyRaw * (1 + (e.armyMult ?? 0)) * (1 + (e.idleMult ?? 0)) * all * killMult;
+  const armyMultTotal = (1 + (e.armyMult ?? 0)) * (1 + (e.idleMult ?? 0)) * all * killMult;
+  const armyDps = armyRaw * armyMultTotal;
   let petDps = 0;
   if (s.activePet) {
     const p = PETS.find(p => p.id === s.activePet)!;
@@ -123,6 +131,7 @@ export function derive(s: GameState): Derived {
     critChance: Math.min(0.75, e.critChance ?? 0),
     critMult: 2 + (e.critMult ?? 0),
     armyDps,
+    armyMult: armyMultTotal,
     petDps,
     idleDps: armyDps + petDps,
     bossMult: 1 + (e.bossDmg ?? 0),
