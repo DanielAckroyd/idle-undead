@@ -169,7 +169,7 @@ function Battle({ s, d, onSettings, onMenu }: BattleProps) {
     }
     // Events are presentation-only and never saved: drain in place rather than
     // publishing a second global state update per frame.
-    s.events.length = 0;
+    getState().events.length = 0;
   });
 
   const onTap = useCallback((ev: React.PointerEvent<HTMLDivElement>) => {
