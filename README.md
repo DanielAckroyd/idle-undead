@@ -23,3 +23,11 @@ npx tsx scripts/sim.ts skeleton 2 5   # balance sim: class, hours, taps/sec
 - `src/store.ts` — tiny external store + 100ms game loop + autosave.
 - `src/ui/` — React screens.
 - `public/sprites/` — generated SVG sprites (`npm run sprites`).
+
+## Mobile (Capacitor)
+
+```sh
+npm run build
+npx cap add ios      # or android (needs Xcode / Android Studio)
+npx cap sync && npx cap open ios
+```
