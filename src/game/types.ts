@@ -133,9 +133,10 @@ export interface Enemy {
 }
 
 export type GameEvent =
-  | { t: 'hit'; source: 'tap' | 'pet' | 'auto' | 'idle' | 'rot'; dmg: number; crit: boolean }
+  | { t: 'hit'; source: 'tap' | 'pet' | 'auto'; dmg: number; crit: boolean }
   | { t: 'kill'; name: string; factionId: string; isBoss: boolean }
-  | { t: 'bossTimeout'; name: string };
+  | { t: 'bossTimeout'; name: string }
+  | { t: 'soulfire'; amount: number; reason: 'zone' | 'daily' | 'purchase' };
 
 export interface GameState {
   version: number;

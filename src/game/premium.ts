@@ -4,6 +4,13 @@ import { derive } from './stats';
 import { enemyGold, enemyMaxHp } from './data/enemies';
 import { addItem, rollItem } from './items';
 import { INVENTORY_CAP } from './data/items';
+import { isBossStage } from './data/enemies';
+import { makeEnemy, pushEvent } from './engine';
+
+/** After a boss timeout you're farming on a boss stage; a retry re-enters the fight immediately. */
+export function canRetryBoss(s: GameState): boolean {
+  return !s.fightingBoss && isBossStage(s.stage) && !s.enemy.isBoss;
+}
 
 export const dayIndex = (ms: number) => Math.floor(ms / 86_400_000);
 
@@ -29,6 +36,7 @@ export function claimDaily(s: GameState, now: number): number {
   s.claimedDaily = today;
   const amt = DAILY_SOULFIRE[streak % DAILY_SOULFIRE.length];
   s.soulfire += amt;
+  pushEvent(s, { t: 'soulfire', amount: amt, reason: 'daily' });
   return amt;
 }
 
@@ -47,15 +55,23 @@ export function applyAdBoost(s: GameState, id: (typeof AD_BOOSTS)[number]['id'],
     case 'ad_gold': s.boosts.goldUntil = Math.max(s.boosts.goldUntil, now) + 4 * 3600_000; break;
     case 'ad_damage': s.boosts.damageUntil = Math.max(s.boosts.damageUntil, now) + 3600_000; break;
     case 'ad_offline': s.boosts.offlineDoubleNext = true; break;
-    case 'ad_boss': if (s.enemy.isBoss && s.enemy.timer !== undefined) s.enemy.timer = derive(s).bossTime; break;
+    case 'ad_boss': {
+      const d = derive(s);
+      if (s.enemy.isBoss && s.enemy.timer !== undefined) s.enemy.timer = d.bossTime;
+      else if (canRetryBoss(s)) { s.fightingBoss = true; s.killsThisStage = 0; s.enemy = makeEnemy(s.stage, true, s.seed + s.stats.kills, d.bossTime); }
+      else return false;
+      break;
+    }
   }
   return true;
 }
 
-/** Grant the entitlement for a completed real-money purchase (store already verified it). */
-export function grantPurchase(s: GameState, productId: string, now: number): boolean {
+/** Grant the entitlement for a completed real-money purchase (store already verified it).
+ *  `restore` mode only re-grants non-consumables. */
+export function grantPurchase(s: GameState, productId: string, now: number, restore = false): boolean {
   const p = IAP.find(p => p.id === productId);
   if (!p) return false;
+  if (restore && !p.restorable) return false;
   switch (p.kind) {
     case 'soulfire': s.soulfire += p.amount!; return true;
     case 'remove_ads': s.adsRemoved = true; return true;

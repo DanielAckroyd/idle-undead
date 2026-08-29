@@ -314,9 +314,29 @@ describe('events', () => {
     expect(s.events.at(-1)).toMatchObject({ t: 'hit', source: 'tap', crit: false });
     s.events = [];
     s.enemy.hp = 1; tap(s, d, 1);
-    expect(s.events.map(e => e.t)).toEqual(['hit', 'kill']);
+    expect(s.events.map(e => e.t).slice(0, 2)).toEqual(['hit', 'kill']);
     const a = fresh(); a.skills = { sk_bonestorm: 3 }; a.enemy.hp = 1e12; a.enemy.maxHp = 1e12;
     tick(a, 1);
     expect(a.events.filter(e => e.t === 'hit' && e.source === 'auto').length).toBe(6);
+  });
+});
+
+describe('premium fixes', () => {
+  it('restore only re-grants non-consumables', () => {
+    const s = fresh();
+    expect(grantPurchase(s, 'sf_small', 1, true)).toBe(false);
+    expect(s.soulfire).toBe(0);
+    expect(grantPurchase(s, 'remove_ads', 1, true)).toBe(true);
+  });
+  it('boss retry re-enters a failed boss', () => {
+    const s = fresh(); s.adsRemoved = true;
+    s.stage = 10; s.maxStage = 10;
+    s.enemy = { name: 'b', factionId: 'holy', hp: 1e9, maxHp: 1e9, isBoss: true, timer: 0.1 };
+    tick(s, 1);
+    expect(s.fightingBoss).toBe(false);
+    expect(applyAdBoost(s, 'ad_boss', 5)).toBe(true);
+    expect(s.enemy.isBoss).toBe(true);
+    const t = fresh(); t.adsRemoved = true;
+    expect(applyAdBoost(t, 'ad_boss', 5)).toBe(false);
   });
 });

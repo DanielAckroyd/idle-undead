@@ -68,7 +68,7 @@ export function dealDamage(s: GameState, d: Derived, amount: number, source: 'ta
   const dmg = Math.min(s.enemy.hp, amount * (s.enemy.isBoss ? d.bossMult : 1) * (s.boosts.damageUntil > s.lastTick ? 2 : 1));
   s.enemy.hp -= dmg;
   s.stats.damageDealt += dmg;
-  if (source !== 'idle' && source !== 'rot') pushEvent(s, { t: 'hit', source, dmg, crit });
+  if (source === 'tap' || source === 'pet' || source === 'auto') pushEvent(s, { t: 'hit', source, dmg, crit });
   if ((source === 'tap' || source === 'auto') && d.effects.lifestealGold) gain(s, dmg * d.effects.lifestealGold * d.goldMult);
   if (s.enemy.hp <= 0) onKill(s, d);
   return dmg;
@@ -85,7 +85,7 @@ function onKill(s: GameState, d: Derived) {
 
   if (wasBoss) {
     addItem(s, rollItem(s.seed + s.stats.kills * 977 + s.stage, s.stage));
-    if (s.stage === s.maxStage) s.soulfire += SOULFIRE_FIRST_ZONE_CLEAR;
+    if (s.stage === s.maxStage) { s.soulfire += SOULFIRE_FIRST_ZONE_CLEAR; pushEvent(s, { t: 'soulfire', amount: SOULFIRE_FIRST_ZONE_CLEAR, reason: 'zone' }); }
     advanceStage(s, 1);
   } else {
     s.killsThisStage++;

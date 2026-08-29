@@ -149,7 +149,7 @@ function Battle({ s, d, onSettings, onMenu }: BattleProps) {
           from ? from.y : box.cy + jitter * 0.4,
           fmt(ev.dmg),
           ev.crit,
-          ev.source === 'idle' || ev.source === 'rot' ? 'auto' : ev.source,
+          ev.source,
         );
         if (ev.source === 'tap') tapPoint.current = null;
       } else if (ev.t === 'kill') {

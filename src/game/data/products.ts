@@ -11,6 +11,8 @@ export interface Product {
   soulfire?: number;
   amount?: number;      // soulfire granted / hours skipped / slots
   skinId?: string;
+  /** non-consumable entitlements are re-granted by restore(); consumables never are */
+  restorable?: boolean;
 }
 
 /** IAP (real money) — SKU ids map 1:1 to store products. */
@@ -18,7 +20,7 @@ export const IAP: Product[] = [
   { id: 'sf_small', kind: 'soulfire', name: 'Handful of Soulfire', desc: '120 Soulfire', priceLabel: '$1.99', amount: 120 },
   { id: 'sf_medium', kind: 'soulfire', name: 'Urn of Soulfire', desc: '700 Soulfire (+17%)', priceLabel: '$9.99', amount: 700 },
   { id: 'sf_large', kind: 'soulfire', name: 'Crypt of Soulfire', desc: '1,600 Soulfire (+33%)', priceLabel: '$19.99', amount: 1600 },
-  { id: 'remove_ads', kind: 'remove_ads', name: 'Banish the Living Ads', desc: 'No ads, ever. Ad boosts become free buttons.', priceLabel: '$4.99' },
+  { id: 'remove_ads', kind: 'remove_ads', name: 'Banish the Living Ads', desc: 'No ads, ever. Ad boosts become free buttons.', priceLabel: '$4.99', restorable: true },
   { id: 'starter', kind: 'starter', name: 'Gravedigger\'s Pack', desc: '300 Soulfire + a guaranteed Epic drop + 12h time skip. One per account.', priceLabel: '$2.99', amount: 300 },
 ];
 
@@ -39,7 +41,7 @@ export const AD_BOOSTS = [
   { id: 'ad_gold', name: '2× Gold', desc: 'Double gold for 4 hours.', hours: 4 },
   { id: 'ad_damage', name: '2× Damage', desc: 'Double all damage for 1 hour.', hours: 1 },
   { id: 'ad_offline', name: '2× Offline', desc: 'Double your next offline reward.' },
-  { id: 'ad_boss', name: 'Boss Retry', desc: 'Reset the boss timer right now.' },
+  { id: 'ad_boss', name: 'Boss Retry', desc: 'Reset the boss timer, or re-enter a boss you just failed.' },
 ] as const;
 export const AD_BOOSTS_PER_DAY = 6;
 
