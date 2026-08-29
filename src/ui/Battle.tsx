@@ -5,7 +5,7 @@ import { makeEnemy, tap } from '../game/engine';
 import { BOSS_EVERY, FACTIONS, KILLS_PER_STAGE, factionForStage, isBossStage } from '../game/data/enemies';
 import { RARITY_INFO } from '../game/data/items';
 import { fmt, fmtTime } from '../game/numbers';
-import { mutate } from '../store';
+import { getState, mutate } from '../store';
 import Sprite from './Sprite';
 import { GoldIcon, SoulIcon, SoulfireIcon, MenuIcon, GearIcon } from './Icons';
 import {
