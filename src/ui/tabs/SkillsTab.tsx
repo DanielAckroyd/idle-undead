@@ -53,7 +53,7 @@ function SkillsTab({ s, d }: { s: GameState; d: Derived }) {
             {d.title} <span className="tier-badge">T{d.tier}</span>
           </div>
           <div className="row-sub accent">{d.skillPointsAvail} skill point{d.skillPointsAvail === 1 ? '' : 's'} available</div>
-          <div className="row-sub dim">{d.skillPointsTotal} earned &middot; 1 per 10 hero levels &amp; per boss stage</div>
+          <div className="row-sub dim">{d.skillPointsTotal} earned &middot; 1 per 20 hero levels &amp; every 20 stages</div>
         </div>
       </div>
 
