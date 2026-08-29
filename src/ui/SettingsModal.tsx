@@ -1,14 +1,15 @@
 import { useState } from 'react';
 import { resetGame } from '../store';
 
-export default function SettingsModal({ onClose }: { onClose: () => void }) {
+export default function SettingsModal({ onClose, onReset }: { onClose: () => void; onReset?: () => void }) {
   const [confirm, setConfirm] = useState(false);
   return (
     <div className="modal-scrim" onClick={onClose}>
       <div className="modal" onClick={e => e.stopPropagation()}>
         <h2 className="modal-title">Settings</h2>
         <p className="modal-body dim">
-          Progress saves to this device automatically.
+          Progress saves to this device automatically. Animations follow your system
+          &ldquo;reduce motion&rdquo; setting.
         </p>
         <button
           type="button"
@@ -16,7 +17,7 @@ export default function SettingsModal({ onClose }: { onClose: () => void }) {
           onClick={() => {
             if (!confirm) { setConfirm(true); return; }
             resetGame();
-            onClose();
+            if (onReset) onReset(); else onClose();
           }}
         >
           {confirm ? 'Erase everything — are you sure?' : 'Reset game'}

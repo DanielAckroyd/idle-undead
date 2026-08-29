@@ -5,10 +5,14 @@ import { buyHero, heroCost, heroMaxAffordable } from '../../game/engine';
 import { fmt } from '../../game/numbers';
 import { mutate } from '../../store';
 import { classSpriteId } from '../sprites';
+import { heroDelta, plus } from '../deltas';
 import Sprite from '../Sprite';
 
-function BuyButton({ s, count, label }: { s: GameState; count: number; label: string }) {
-  const affordable = count > 0 && s.gold >= heroCost(s, count);
+function BuyButton({ s, d, count, label }: { s: GameState; d: Derived; count: number; label: string }) {
+  const cost = count > 0 ? heroCost(s, count) : 0;
+  const affordable = count > 0 && s.gold >= cost;
+  // Honest number: what these levels actually add to the tap figure in the header.
+  const delta = heroDelta(s, d, count);
   return (
     <button
       type="button"
@@ -17,7 +21,8 @@ function BuyButton({ s, count, label }: { s: GameState; count: number; label: st
       onClick={() => mutate(st => { buyHero(st, count); })}
     >
       <span className="buy-label">{label}</span>
-      <span className="buy-cost">{count > 0 ? fmt(heroCost(s, count)) : '—'}</span>
+      <span className="buy-gain">{plus(delta.tap, 'tap dmg')}</span>
+      <span className="buy-cost">{count > 0 ? fmt(cost) : '—'}</span>
     </button>
   );
 }
@@ -39,10 +44,10 @@ function HeroTab({ s, d }: { s: GameState; d: Derived }) {
       </div>
 
       <div className="buy-grid">
-        <BuyButton s={s} count={1} label="Level x1" />
-        <BuyButton s={s} count={10} label="Level x10" />
-        <BuyButton s={s} count={100} label="Level x100" />
-        <BuyButton s={s} count={max} label={`Max (${max})`} />
+        <BuyButton s={s} d={d} count={1} label="Level x1" />
+        <BuyButton s={s} d={d} count={10} label="Level x10" />
+        <BuyButton s={s} d={d} count={100} label="Level x100" />
+        <BuyButton s={s} d={d} count={max} label={`Max (${max})`} />
       </div>
 
       <div className="card stats-card">

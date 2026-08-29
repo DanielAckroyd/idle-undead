@@ -6,14 +6,14 @@ import Sprite from './Sprite';
 import { classSpriteId } from './sprites';
 import { ESSENCE_COLOR, ESSENCE_NAME } from './theme';
 
-function ClassCard({ c }: { c: ClassDef }) {
+function ClassCard({ c, onPick }: { c: ClassDef; onPick: () => void }) {
   const accent = ESSENCE_COLOR[c.essence];
   return (
     <button
       type="button"
       className="class-card"
       style={{ '--accent': accent } as React.CSSProperties}
-      onClick={() => mutate(s => chooseClass(s, c.id))}
+      onClick={() => { mutate(s => chooseClass(s, c.id)); onPick(); }}
     >
       <div className="class-card-top">
         <Sprite kind="classes" id={classSpriteId(c.id, 1)} size={64} className="class-card-sprite" alt={c.tierNames[0]} />
@@ -35,13 +35,14 @@ function ClassCard({ c }: { c: ClassDef }) {
   );
 }
 
-export default function ClassPicker() {
+export default function ClassPicker({ onChosen, onBack }: { onChosen: () => void; onBack: () => void }) {
   return (
     <div className="picker">
-      <h1 className="picker-title">Idle Undead</h1>
-      <p className="picker-sub">Choose the death you will wear.</p>
+      <button type="button" className="btn ghost back-btn" onClick={onBack}>&#8249; Menu</button>
+      <h1 className="picker-title">Choose your death</h1>
+      <p className="picker-sub">The shape you take is the way you will win.</p>
       <div className="picker-list">
-        {CLASS_LIST.map(c => <ClassCard key={c.id} c={c} />)}
+        {CLASS_LIST.map(c => <ClassCard key={c.id} c={c} onPick={onChosen} />)}
       </div>
     </div>
   );

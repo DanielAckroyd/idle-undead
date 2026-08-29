@@ -1,17 +1,20 @@
 import { memo } from 'react';
 import type { GameState, PetDef } from '../../game/types';
+import type { Derived } from '../../game/stats';
 import { PETS } from '../../game/data/pets';
 import { buyPet, petCost, setActivePet } from '../../game/engine';
 import { fmt } from '../../game/numbers';
 import { mutate } from '../../store';
 import Sprite from '../Sprite';
 import { effectsText } from '../effects';
+import { petDelta, plus } from '../deltas';
 
-function PetRow({ s, p }: { s: GameState; p: PetDef }) {
+function PetRow({ s, d, p }: { s: GameState; d: Derived; p: PetDef }) {
   const lvl = s.pets[p.id] ?? 0;
   const cost = petCost(s, p.id);
   const ok = s.gold >= cost;
   const active = s.activePet === p.id;
+  const gain = petDelta(s, d, p.id);
   return (
     <div className={active ? 'card pet-row active' : 'card pet-row'}>
       <div className="unit-head">
@@ -39,6 +42,9 @@ function PetRow({ s, p }: { s: GameState; p: PetDef }) {
           onClick={() => mutate(st => { buyPet(st, p.id); })}
         >
           <span className="buy-label">{lvl > 0 ? 'Level up' : 'Buy'}</span>
+          <span className="buy-gain">
+            {gain.dps > 0 ? plus(gain.dps, 'DPS') : gain.tap > 0 ? plus(gain.tap, 'tap dmg') : effectsText(p.passive)}
+          </span>
           <span className="buy-cost">{fmt(cost)}</span>
         </button>
         <button
@@ -54,16 +60,17 @@ function PetRow({ s, p }: { s: GameState; p: PetDef }) {
   );
 }
 
-function PetsTab({ s }: { s: GameState }) {
+function PetsTab({ s, d }: { s: GameState; d: Derived }) {
   const unlocked = PETS.filter(p => s.maxStage >= p.unlockStage);
   const next = PETS.find(p => s.maxStage < p.unlockStage);
   const active = PETS.find(p => p.id === s.activePet);
   return (
     <div className="tabpane">
       <div className="card note">
-        Active pet: <b className="accent">{active ? active.name : 'none'}</b>. Every owned pet keeps giving its passive.
+        Active pet: <b className="accent">{active ? active.name : 'none'}</b> &middot; {fmt(d.petDps)} DPS.
+        Every owned pet keeps giving its passive.
       </div>
-      {unlocked.map(p => <PetRow key={p.id} s={s} p={p} />)}
+      {unlocked.map(p => <PetRow key={p.id} s={s} d={d} p={p} />)}
       {next && (
         <div className="card locked-row">
           <span className="row-title dim">???</span>

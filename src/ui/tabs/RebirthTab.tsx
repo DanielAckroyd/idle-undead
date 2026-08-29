@@ -62,9 +62,10 @@ function RebirthTab({ s }: { s: GameState }) {
           <span className="dim"> souls on rebirth</span>
         </div>
         <p className="row-sub dim">
-          Rebirth resets your stage, gold, hero level, skills, army, gear and pets. You keep
-          Souls, Relics and any class unlocks — and you come back far stronger. Souls scale
-          with your best stage: <b>floor((best / 10)^1.6)</b>. You need stage 20 to rebirth.
+          Rebirth resets your stage, gold, hero level, skills, army and pets. You keep
+          Souls, Relics, your gear and any class unlocks — and you come back far stronger.
+          Souls scale with your best stage: <b>floor((best / 10)^1.6)</b>. You need stage 20
+          to rebirth.
         </p>
         <div className="stat-line"><span>Best stage</span><b>{s.maxStage}</b></div>
         <div className="stat-line"><span>Souls held</span><b>{fmt(s.souls)}</b></div>

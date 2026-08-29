@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { spriteUrl, type SpriteKind } from './sprites';
+import { artUrl, markArtMissing, spriteUrl, useArt, type SpriteKind } from './sprites';
 
 interface SpriteProps {
   kind: SpriteKind;
@@ -32,23 +32,36 @@ function Silhouette({ size, className }: { size: number; className?: string }) {
   );
 }
 
-/** Sprite image with a graceful fallback while assets are still being generated. */
+/**
+ * Painted PNG first, generated SVG next, inline silhouette last.
+ * The PNG is only used once a probe has confirmed it loads, so a missing
+ * painted asset never flashes a broken image.
+ */
 export default function Sprite({ kind, id, size = 64, alt = '', className }: SpriteProps) {
-  const url = spriteUrl(kind, id);
+  const png = artUrl(kind, id);
+  const svg = spriteUrl(kind, id);
+  const src = useArt(png, svg);
   // Remember which url failed rather than a boolean, so a new url retries for free.
   const [brokenUrl, setBrokenUrl] = useState<string | null>(null);
 
-  if (brokenUrl === url) return <Silhouette size={size} className={className} />;
+  if (src === svg && brokenUrl === svg) return <Silhouette size={size} className={className} />;
+
+  // Tag which tier of asset won, so CSS can size the chunky placeholder art more
+  // conservatively than a painted 512px PNG.
+  const cls = [className, src === png ? 'art-png' : 'art-svg'].filter(Boolean).join(' ');
 
   return (
     <img
-      src={url}
+      src={src}
       width={size}
       height={size}
       alt={alt}
-      className={className}
+      className={cls}
       draggable={false}
-      onError={() => setBrokenUrl(url)}
+      onError={() => {
+        if (src === png) markArtMissing(png);
+        else setBrokenUrl(svg);
+      }}
     />
   );
 }
