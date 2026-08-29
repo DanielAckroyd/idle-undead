@@ -91,7 +91,7 @@ function codex(job: Job, rawPath: string): Promise<void> {
     const p = spawn('codex', ['exec', '--skip-git-repo-check', '-C', dir, '--full-auto', prompt], { stdio: ['ignore', 'ignore', 'pipe'] });
     let err = ''; p.stderr.on('data', d => err += d);
     const t = setTimeout(() => { p.kill(); rej(new Error('timeout')); }, 8 * 60 * 1000);
-    p.on('exit', code => { clearTimeout(t); code === 0 && existsSync(rawPath) ? res() : rej(new Error(`codex exit ${code}: ${err.slice(-300)}`)); });
+    p.on('exit', code => { clearTimeout(t); if (code === 0 && existsSync(rawPath)) res(); else rej(new Error(`codex exit ${code}: ${err.slice(-300)}`)); });
   });
 }
 
